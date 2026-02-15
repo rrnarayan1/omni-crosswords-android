@@ -91,7 +91,7 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(modifier = Modifier.padding(10.dp).fillMaxWidth()) {
                     CrosswordTextField(vm = vm, focusRequester = focusRequester)
-                    val boxWidth = ((LocalConfiguration.current.screenWidthDp - 20) / crossword.width).toInt()
+                    val boxWidth = ((LocalConfiguration.current.screenWidthDp - 80) / crossword.width).toInt()
 
                     Column(modifier = Modifier.align(Alignment.Center)) {
                         for (row in 0 until crossword.height) {

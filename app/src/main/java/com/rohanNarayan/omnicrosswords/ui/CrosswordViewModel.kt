@@ -114,10 +114,6 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
         }
         goToNextTagAndCheck()
         saveEntry(newEntry)
-
-        if (newEntry == _crossword.solution) {
-            solutionHandler()
-        }
     }
 
     fun onInputReceived(char: String) {
@@ -143,10 +139,6 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
             goToNextTagAndCheck()
         }
         saveEntry(newEntry)
-
-        if (newEntry == _crossword.solution) {
-            solutionHandler()
-        }
     }
 
     fun onBackspace() {
@@ -259,7 +251,7 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
             it.copy(goingAcross = !it.goingAcross)
         }
         for (i in 1 until _crossword.clues.size) {
-            var trialClueID: String = i.toString() + (if(directionalLetter == "A") "D" else "A")
+            val trialClueID: String = i.toString() + (if(directionalLetter == "A") "D" else "A")
             if (_crossword.clues[trialClueID]?.isNotEmpty() ?: false) {
                 return trialClueID
             }
@@ -299,23 +291,9 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
     }
 
     fun saveEntry(newEntry: List<String>) {
-        _uiState.update { it.copy(entry = newEntry) }
-        val newCrossword: Crossword = _crossword.copy(entry = newEntry)
-        viewModelScope.launch {
-            _dataVm.localInsert(
-                crossword = newCrossword
-            )
-        }
-    }
-
-    fun solutionHandler() {
-        val currentState = _uiState.value
-        if (currentState.entry != _crossword.solution) {
-            return
-        }
-
-        _uiState.update { it.copy(isSolved = true) }
-        val newCrossword: Crossword = _crossword.copy(isSolved = true, entry = currentState.entry)
+        val isSolved: Boolean = newEntry == _crossword.solution
+        _uiState.update { it.copy(entry = newEntry, isSolved = isSolved) }
+        val newCrossword: Crossword = _crossword.copy(entry = newEntry, isSolved = isSolved)
         viewModelScope.launch {
             _dataVm.localInsert(
                 crossword = newCrossword
