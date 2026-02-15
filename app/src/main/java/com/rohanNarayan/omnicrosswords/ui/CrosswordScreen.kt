@@ -17,19 +17,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.RotateLeft
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.RotateLeft
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Support
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,18 +35,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.TextUnit.Companion
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,34 +109,37 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                         }
                     }
                 }
-                Row(modifier = Modifier.fillMaxSize().height(25.dp).padding(horizontal = 10.dp),
+                Row(modifier = Modifier.fillMaxSize().height(25.dp).padding(horizontal = 20.dp),
                     verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.SpaceBetween) {
                     Row {
-                        Box(modifier = Modifier.clickable { vm.toggleDirection() }) {
-                            Icon(imageVector = Icons.AutoMirrored.Filled.RotateLeft,
-                                contentDescription = "Toggle Direction"
-                            )
-                        }
+                        ToolbarIconButton(
+                            image = Icons.AutoMirrored.Filled.RotateLeft,
+                            action = { vm.toggleDirection() },
+                            description = "Toggle Direction"
+                        )
 
-                        Box(modifier = Modifier.clickable { vm.solveCell() }) {
-                            Icon(imageVector = Icons.Default.Support,
-                                contentDescription = "Solve Cell"
-                            )
-                        }
+                        ToolbarIconButton(
+                            image = Icons.Default.Support,
+                            action = { vm.solveCell() },
+                            description = "Solve Cell"
+                        )
                     }
 
                     ScrollableText(text = activeClue ?: "", fontSize = settings.value.clueFontSize)
 
                     Row {
-                        Box(modifier = Modifier.clickable { vm.goToPreviousClue() }) {
-                            Icon(imageVector = Icons.Default.ChevronLeft,
-                                contentDescription = "Previous Clue")
-                        }
-                        Box(modifier = Modifier.clickable { vm.goToNextClue() }) {
-                            Icon(imageVector = Icons.Default.ChevronRight,
-                                contentDescription = "Next Clue")
-                        }
+                        ToolbarIconButton(
+                            image = Icons.Default.ChevronLeft,
+                            action = { vm.goToPreviousClue() },
+                            description = "Previous Clue"
+                        )
+
+                        ToolbarIconButton(
+                            image = Icons.Default.ChevronRight,
+                            action = { vm.goToNextClue() },
+                            description = "Next Clue"
+                        )
                     }
 
                 }
@@ -221,8 +214,8 @@ fun ScrollableText(text: String, fontSize: Int) {
 
     Column(
         modifier = Modifier
-            .width((LocalConfiguration.current.screenWidthDp - 120).dp)
-            .height(25.dp)
+            .width((LocalConfiguration.current.screenWidthDp - 150).dp)
+            .height(30.dp)
             .padding(horizontal = 15.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -231,6 +224,15 @@ fun ScrollableText(text: String, fontSize: Int) {
             text = text,
             lineHeight = (fontSize + 1).sp,
             fontSize = fontSize.sp
+        )
+    }
+}
+
+@Composable
+fun ToolbarIconButton(image: ImageVector, action: () -> Unit, description: String) {
+    Box(modifier = Modifier.padding(horizontal = 2.dp).clickable { action() }) {
+        Icon(imageVector = image,
+            contentDescription = description
         )
     }
 }
