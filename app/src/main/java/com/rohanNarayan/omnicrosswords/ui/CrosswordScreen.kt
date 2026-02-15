@@ -81,7 +81,10 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                 CrosswordTopBar(crossword = crossword,
                     isSolved = state.isSolved,
                     isErrorTrackingEnabled = state.errorTrackingEnabled,
-                    onErrorTrackingChange = { vm.toggleErrorTracking() })
+                    onErrorTrackingChange = { vm.toggleErrorTracking() },
+                    isRebusModeEnabled = state.isRebusModeEnabled,
+                    onRebusModeChange = { vm.toggleRebusMode() }
+                )
             }
         ) { padding ->
             Column(modifier = Modifier.fillMaxSize().padding(padding),
@@ -188,9 +191,10 @@ fun CrosswordCellView(
         contentAlignment = Alignment.Center
     ) {
         if (isEditable) {
+            val fontSize = if (value.length == 1) boxWidth * 0.8 else (boxWidth.toFloat() / value.length)
             Text(
                 text = value,
-                style = TextStyle(fontSize = (boxWidth*0.8).sp)
+                style = TextStyle(fontSize = fontSize.toInt().sp)
             )
 
             if (symbol % 1000 != 0) {

@@ -49,7 +49,7 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrosswordTopBar(crossword: Crossword, isSolved: Boolean, isErrorTrackingEnabled: Boolean,
-                    onErrorTrackingChange: () -> Unit) {
+                    onErrorTrackingChange: () -> Unit, isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit) {
     var showSettings by remember { mutableStateOf(false) }
 
     val formattedDate = DateTimeFormatter.ofPattern("EE M/d/yy")
@@ -71,7 +71,9 @@ fun CrosswordTopBar(crossword: Crossword, isSolved: Boolean, isErrorTrackingEnab
                     crossword = crossword,
                     onDismiss = { showSettings = false },
                     isErrorTrackingEnabled = isErrorTrackingEnabled,
-                    onErrorTrackingChange = { onErrorTrackingChange() }
+                    onErrorTrackingChange = { onErrorTrackingChange() },
+                    isRebusModeEnabled = isRebusModeEnabled,
+                    onRebusModeChange = { onRebusModeChange() }
                 )
             }
         },
@@ -83,7 +85,9 @@ fun CrosswordTopBar(crossword: Crossword, isSolved: Boolean, isErrorTrackingEnab
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrosswordSettingsScreen(crossword: Crossword, onDismiss: () -> Unit, isErrorTrackingEnabled: Boolean, onErrorTrackingChange: () -> Unit) {
+fun CrosswordSettingsScreen(crossword: Crossword, onDismiss: () -> Unit,
+                            isErrorTrackingEnabled: Boolean, onErrorTrackingChange: () -> Unit,
+                            isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -92,7 +96,7 @@ fun CrosswordSettingsScreen(crossword: Crossword, onDismiss: () -> Unit, isError
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -101,6 +105,19 @@ fun CrosswordSettingsScreen(crossword: Crossword, onDismiss: () -> Unit, isError
                 Switch(
                     checked = isErrorTrackingEnabled,
                     onCheckedChange = { onErrorTrackingChange() }
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Rebus Mode",
+                    modifier = Modifier.padding(horizontal = 5.dp))
+                Switch(
+                    checked = isRebusModeEnabled,
+                    onCheckedChange = { onRebusModeChange() }
                 )
             }
             CrosswordInfo(crossword = crossword)

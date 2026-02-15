@@ -38,6 +38,13 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
         }
     }
 
+    fun toggleRebusMode(newValue: Boolean? = null) {
+        val currentState = _uiState.value
+        _uiState.update {
+            it.copy(isRebusModeEnabled = newValue ?: !currentState.isRebusModeEnabled)
+        }
+    }
+
     fun getActiveClue(): String? {
         val currentState = _uiState.value
         val clueId = getClueId(crossword = _crossword,
@@ -68,7 +75,8 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
             // if we're going across and across clue doesn't exist, switch to going down
             newGoingAcross = !newGoingAcross
         }
-        _uiState.update { it.copy(focusedTag = tag, goingAcross = newGoingAcross) }
+        _uiState.update { it.copy(focusedTag = tag, goingAcross = newGoingAcross,
+            isRebusModeEnabled = false) }
         setHighlighting()
     }
 
@@ -127,11 +135,13 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
             }
             return
         }
-
-        val newEntry = currentState.entry.toMutableList().apply {
-            this[currentState.focusedTag] = char.uppercase()
+        val newEntry = currentState.entry.toMutableList()
+        if (currentState.isRebusModeEnabled) {
+            newEntry[currentState.focusedTag] += char.uppercase()
+        } else {
+            newEntry[currentState.focusedTag] = char.uppercase()
+            goToNextTagAndCheck()
         }
-        goToNextTagAndCheck()
         saveEntry(newEntry)
 
         if (newEntry == _crossword.solution) {

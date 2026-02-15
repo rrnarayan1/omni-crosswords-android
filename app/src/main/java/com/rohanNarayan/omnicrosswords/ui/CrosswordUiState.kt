@@ -7,4 +7,5 @@ data class CrosswordUiState(
     val goingAcross: Boolean = true,
     val errorTrackingEnabled: Boolean = false,
     val isSolved: Boolean = false,
+    val isRebusModeEnabled: Boolean = false
 )
