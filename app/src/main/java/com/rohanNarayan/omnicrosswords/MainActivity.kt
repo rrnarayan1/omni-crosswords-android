@@ -71,7 +71,6 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun LoginView() {
-        Text("Loading")
         LaunchedEffect(Unit) {
             auth.signInAnonymously().addOnSuccessListener {
                 AuthProvider.updateAuthState(auth.currentUser)

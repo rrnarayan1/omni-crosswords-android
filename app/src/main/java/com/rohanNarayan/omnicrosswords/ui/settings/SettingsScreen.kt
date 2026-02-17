@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.SettingsInputComponent
 import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material3.BottomSheetDefaults
@@ -60,6 +61,10 @@ fun SettingsScreen(vm: SettingsViewModel) {
                 actions = {
                     IconButton(onClick = { uriHandler.openUri("https://ko-fi.com/rrnarayan1") }) {
                         Icon(Icons.Default.VolunteerActivism, contentDescription = "Donate")
+                    }
+
+                    IconButton(onClick = { uriHandler.openUri("https://omnicrosswords.app") }) {
+                        Icon(Icons.Default.Info, contentDescription = "Info")
                     }
                 }
             )

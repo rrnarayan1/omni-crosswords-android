@@ -19,7 +19,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -30,7 +29,6 @@ import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
-import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
@@ -41,7 +39,6 @@ fun CrosswordListView(navController: NavController, settingsVm: SettingsViewMode
     val settings = settingsVm.settings.collectAsState()
     val crosswordListFlow = dataViewModel.localGetAllRecords(showSolved = settings.value.showSolvedPuzzles)
     val crosswordList = crosswordListFlow.collectAsState(initial = emptyList())
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
        fetchCrosswords(vm = dataViewModel, settingsVm = settingsVm, existingCrosswords = crosswordListFlow)

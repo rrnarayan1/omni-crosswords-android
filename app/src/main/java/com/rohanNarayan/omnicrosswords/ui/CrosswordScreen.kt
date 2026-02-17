@@ -1,5 +1,6 @@
 package com.rohanNarayan.omnicrosswords.ui
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,6 +36,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -81,7 +84,7 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(modifier = Modifier.padding(10.dp).fillMaxWidth()) {
                     CrosswordTextField(vm = vm, focusRequester = focusRequester)
-                    val boxWidth = ((LocalConfiguration.current.screenWidthDp - 80) / crossword.width).toInt()
+                    val boxWidth = ((LocalConfiguration.current.screenWidthDp - 40) / crossword.width).toInt()
 
                     Column(modifier = Modifier.align(Alignment.Center)) {
                         for (row in 0 until crossword.height) {
@@ -109,8 +112,8 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                         }
                     }
                 }
-                Row(modifier = Modifier.fillMaxSize().height(25.dp).padding(horizontal = 20.dp),
-                    verticalAlignment = Alignment.Top,
+                Row(modifier = Modifier.fillMaxWidth().height(30.dp).padding(horizontal = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween) {
                     Row {
                         ToolbarIconButton(
@@ -178,7 +181,7 @@ fun CrosswordCellView(
     Box(
         modifier = Modifier
             .size(boxWidth.dp)
-            .border(0.4.dp, Color.Black)
+            .border(0.5.dp, Color.Black)
             .background(backgroundColor)
             .clickable(enabled = isEditable) { onClick() },
         contentAlignment = Alignment.Center
@@ -189,6 +192,19 @@ fun CrosswordCellView(
                 text = value,
                 style = TextStyle(fontSize = fontSize.toInt().sp)
             )
+
+            if (symbol in 1000..<10000) {
+                // 1000 means cell should be circled,
+                // 10000 means cell should be shaded
+                Canvas(modifier = Modifier.size(boxWidth.dp)) {
+                    drawCircle(
+                        color = Color.Black,
+                        style = Stroke(width = 1f),
+                        radius = boxWidth.toFloat(),
+                        center = center
+                    )
+                }
+            }
 
             if (symbol % 1000 != 0) {
                 val clueNum = symbol % 1000
@@ -232,7 +248,8 @@ fun ScrollableText(text: String, fontSize: Int) {
 fun ToolbarIconButton(image: ImageVector, action: () -> Unit, description: String) {
     Box(modifier = Modifier.padding(horizontal = 2.dp).clickable { action() }) {
         Icon(imageVector = image,
-            contentDescription = description
+            contentDescription = description,
+            modifier = Modifier.height(30.dp)
         )
     }
 }
