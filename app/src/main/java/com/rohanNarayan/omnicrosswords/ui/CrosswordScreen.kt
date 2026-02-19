@@ -59,7 +59,7 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
     if (crosswordState.value != null) {
         val crossword = crosswordState.value!!
         val vm = viewModel {
-            CrosswordViewModel(crossword, dataVm = dataViewModel, settingsVm = settingsVm)
+            CrosswordViewModel(crossword = crossword, dataVm = dataViewModel, settingsVm = settingsVm)
         }
         val state by vm.uiState.collectAsState()
         val activeClue = remember(state) {
