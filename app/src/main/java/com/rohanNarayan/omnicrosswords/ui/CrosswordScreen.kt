@@ -50,7 +50,7 @@ import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsViewModel, crosswordId: String?) {
+fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsViewModel, crosswordId: String?, goBack: () -> Unit) {
     if (crosswordId == null) {
         return
     }
@@ -76,7 +76,8 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                     isErrorTrackingEnabled = state.errorTrackingEnabled,
                     onErrorTrackingChange = { vm.toggleErrorTracking() },
                     isRebusModeEnabled = state.isRebusModeEnabled,
-                    onRebusModeChange = { vm.toggleRebusMode() }
+                    onRebusModeChange = { vm.toggleRebusMode() },
+                    goBack = goBack
                 )
             }
         ) { padding ->

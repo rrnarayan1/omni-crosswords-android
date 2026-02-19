@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SettingsInputComponent
@@ -49,7 +50,8 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrosswordTopBar(crossword: Crossword, isSolved: Boolean, isErrorTrackingEnabled: Boolean,
-                    onErrorTrackingChange: () -> Unit, isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit) {
+                    onErrorTrackingChange: () -> Unit, isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit,
+                    goBack: () -> Unit) {
     var showSettings by remember { mutableStateOf(false) }
 
     val formattedDate = DateTimeFormatter.ofPattern("EE M/d/yy")
@@ -61,6 +63,11 @@ fun CrosswordTopBar(crossword: Crossword, isSolved: Boolean, isErrorTrackingEnab
     }
     TopAppBar(
         title = { Text(title, fontWeight = FontWeight.Bold) },
+        navigationIcon = {
+            IconButton(onClick = { goBack() }) {
+                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            }
+        },
         actions = {
             IconButton(onClick = { showSettings = true }) {
                 Icon(Icons.Default.SettingsInputComponent, contentDescription = "Settings")
@@ -79,7 +86,7 @@ fun CrosswordTopBar(crossword: Crossword, isSolved: Boolean, isErrorTrackingEnab
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = if (isSolved) Color(0x9934C759) else MaterialTheme.colorScheme.surfaceVariant
-        )
+        ),
     )
 }
 

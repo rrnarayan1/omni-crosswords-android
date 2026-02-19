@@ -59,16 +59,17 @@ fun CrosswordListView(navController: NavController, settingsVm: SettingsViewMode
             )
         }
     ) { padding ->
+        val horizontalPadding = 16.dp
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
-            contentPadding = PaddingValues(horizontal = 16.dp),
+            contentPadding = PaddingValues(horizontal = horizontalPadding),
         ) {
             items(crosswordList.value) { crossword ->
                 CrosswordListItemView(navController = navController, crossword = crossword)
                 HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(horizontal = horizontalPadding),
                     thickness = 1.dp,
                     color = Color.LightGray
                 )

@@ -37,7 +37,9 @@ fun NavigationStack(dataViewModel: CrosswordDataViewModel) {
                 dataViewModel = dataViewModel)
         }
         composable(route = Screen.Settings.route) {
-            SettingsScreen(vm = settingsViewModel)
+            SettingsScreen(vm = settingsViewModel) {
+                navController.popBackStack()
+            }
         }
         composable(
             route = Screen.Crossword.route + "?crosswordId={crosswordId}",
@@ -52,7 +54,9 @@ fun NavigationStack(dataViewModel: CrosswordDataViewModel) {
                 dataViewModel = dataViewModel,
                 settingsVm = settingsViewModel,
                 crosswordId = it.arguments?.getString("crosswordId")
-            )
+            ) {
+                navController.popBackStack()
+            }
         }
     }
 }

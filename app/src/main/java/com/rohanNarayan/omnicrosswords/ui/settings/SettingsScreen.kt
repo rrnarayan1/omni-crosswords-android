@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.SettingsInputComponent
@@ -43,10 +45,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(vm: SettingsViewModel) {
+fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
     val settings by vm.settings.collectAsState()
     var showSubscriptions by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
@@ -60,11 +63,16 @@ fun SettingsScreen(vm: SettingsViewModel) {
                 ),
                 actions = {
                     IconButton(onClick = { uriHandler.openUri("https://ko-fi.com/rrnarayan1") }) {
-                        Icon(Icons.Default.VolunteerActivism, contentDescription = "Donate")
+                        Icon(imageVector = Icons.Default.VolunteerActivism, contentDescription = "Donate")
                     }
 
                     IconButton(onClick = { uriHandler.openUri("https://omnicrosswords.app") }) {
-                        Icon(Icons.Default.Info, contentDescription = "Info")
+                        Icon(imageVector = Icons.Default.Info, contentDescription = "Info")
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { goBack() }) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
