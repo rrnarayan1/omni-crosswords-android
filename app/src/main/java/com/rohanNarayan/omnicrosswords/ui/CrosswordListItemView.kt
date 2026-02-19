@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.rohanNarayan.omnicrosswords.data.Crossword
+import com.rohanNarayan.omnicrosswords.ui.nav.NavRoute
 import com.rohanNarayan.omnicrosswords.ui.theme.InProgressOrange
 import com.rohanNarayan.omnicrosswords.ui.theme.SuccessGreen
 import com.rohanNarayan.omnicrosswords.ui.utils.getProgress
@@ -33,10 +34,9 @@ fun CrosswordListItemView(navController: NavController, crossword: Crossword) {
     val formattedDate = toFormattedDate(crossword.date)
     val title = "$outletName - $formattedDate"
 
-    Row(modifier = Modifier
+    Row(modifier = Modifier.fillMaxWidth()
         .padding(horizontal = horizontalPadding, vertical = verticalPadding)
-        .fillMaxWidth()
-        .clickable {navController.navigate(route = Screen.Crossword.route + "?crosswordId=${crossword.id}")},
+        .clickable {navController.navigate(route = NavRoute.Crossword.route + "?crosswordId=${crossword.id}")},
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

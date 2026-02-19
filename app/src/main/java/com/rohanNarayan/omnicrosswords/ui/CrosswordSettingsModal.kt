@@ -30,13 +30,13 @@ fun CrosswordSettingsModal(crossword: Crossword, onDismiss: () -> Unit,
         dragHandle = { BottomSheetDefaults.DragHandle() }
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(vertical = verticalPadding, horizontal = horizontalPadding)) {
-            ToggleSetting(label = "Error Tracking",
-                enabled = isErrorTrackingEnabled,
-                onEnabledChange = { onErrorTrackingChange() })
+            ToggleSetting(label = "Error Tracking", enabled = isErrorTrackingEnabled) {
+                onErrorTrackingChange()
+            }
 
-            ToggleSetting(label = "Rebus Mode",
-                enabled = isRebusModeEnabled,
-                onEnabledChange = { onRebusModeChange() })
+            ToggleSetting(label = "Rebus Mode", enabled = isRebusModeEnabled) {
+                onRebusModeChange()
+            }
 
             CrosswordInfo(crossword = crossword)
         }
@@ -53,6 +53,8 @@ fun CrosswordInfo(crossword: Crossword) {
         crosswordInfo += ("\n" + crossword.copyright)
     }
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(crosswordInfo, modifier=Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        Text(crosswordInfo,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center)
     }
 }

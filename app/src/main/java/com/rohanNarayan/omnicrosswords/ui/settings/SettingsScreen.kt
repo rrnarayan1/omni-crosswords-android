@@ -63,46 +63,38 @@ fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = horizontalPadding),
         ) {
-            ToggleSetting(
-                label = "Show solved puzzles",
-                enabled = settings.showSolvedPuzzles,
-                onEnabledChange = { vm.updateBooleanSetting(SettingsManager.SHOW_SOLVED_PUZZLES, it)}
-            )
+            ToggleSetting(label = "Show solved puzzles", enabled = settings.showSolvedPuzzles) {
+                vm.updateBooleanSetting(SettingsManager.SHOW_SOLVED_PUZZLES, it)
+            }
 
-            ToggleSetting(
-                label = "Default error tracking",
+            ToggleSetting(label = "Default error tracking",
                 enabled = settings.defaultErrorTracking,
-                onEnabledChange = { vm.updateBooleanSetting(SettingsManager.DEFAULT_ERROR_TRACKING, it)}
-            )
+            ) {
+                vm.updateBooleanSetting(SettingsManager.DEFAULT_ERROR_TRACKING, it)
+            }
 
-            ToggleSetting(
-                label = "Skip completed cells",
-                enabled = settings.skipCompletedCells,
-                onEnabledChange = { vm.updateBooleanSetting(SettingsManager.SKIP_COMPLETED_CELLS, it)}
-            )
+            ToggleSetting(label = "Skip completed cells", enabled = settings.skipCompletedCells) {
+                vm.updateBooleanSetting(SettingsManager.SKIP_COMPLETED_CELLS, it)
+            }
 
-            ToggleSetting(
-                label = "Space toggles direction",
-                enabled = settings.spaceTogglesDirection,
-                onEnabledChange = { vm.updateBooleanSetting(SettingsManager.SPACE_TOGGLES_DIRECTION, it)}
-            )
+            ToggleSetting(label = "Space toggles direction", enabled = settings.spaceTogglesDirection) {
+                vm.updateBooleanSetting(SettingsManager.SPACE_TOGGLES_DIRECTION, it)
+            }
 
             val currentDays = settings.deletionDays
             val currentDayLabel = if (currentDays == -1) "Never" else "$currentDays days"
 
-            PickerSetting(
-                label = "Auto-delete puzzles after",
-                currentLabel = currentDayLabel,
-                options = vm.getDeletionDayOptions(),
-                onChange = { vm.updateIntSetting(SettingsManager.DELETION_DAYS, it)}
-            )
+            PickerSetting(label = "Auto-delete puzzles after", currentLabel = currentDayLabel,
+                options = vm.getDeletionDayOptions()
+            ) {
+                vm.updateIntSetting(SettingsManager.DELETION_DAYS, it)
+            }
 
-            PickerSetting(
-                label = "Clue font size",
-                currentLabel = settings.clueFontSize.toString(),
-                options = vm.getFontSizeOptions(),
-                onChange = { vm.updateIntSetting(SettingsManager.CLUE_FONT_SIZE, it)}
-            )
+            PickerSetting(label = "Clue font size", currentLabel = settings.clueFontSize.toString(),
+                options = vm.getFontSizeOptions()
+            ) {
+                vm.updateIntSetting(SettingsManager.CLUE_FONT_SIZE, it)
+            }
 
             Button(onClick = { showSubscriptions = true }) {
                 Text("Manage Subscriptions")
@@ -112,9 +104,10 @@ fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
                 SubscriptionsModal(
                     onDismiss = { showSubscriptions = false },
                     options = allOutlets.sorted(),
-                    selectedOptions = settings.subscribedOutlets,
-                    onToggle = { vm.toggleStringSetInclusion(SettingsManager.SUBSCRIBED_OUTLETS, it) }
-                )
+                    selectedOptions = settings.subscribedOutlets
+                ) {
+                    vm.toggleStringSetInclusion(SettingsManager.SUBSCRIBED_OUTLETS, it)
+                }
             }
         }
     }

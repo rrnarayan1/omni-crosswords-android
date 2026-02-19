@@ -1,4 +1,4 @@
-package com.rohanNarayan.omnicrosswords.ui
+package com.rohanNarayan.omnicrosswords.ui.nav
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -11,6 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
+import com.rohanNarayan.omnicrosswords.ui.CrosswordListScreen
+import com.rohanNarayan.omnicrosswords.ui.CrosswordScreen
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsManager
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsScreen
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
@@ -20,7 +22,6 @@ fun NavigationStack(dataViewModel: CrosswordDataViewModel) {
     val navController = rememberNavController()
 
     val context = LocalContext.current
-
     val settingsViewModel: SettingsViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -29,20 +30,21 @@ fun NavigationStack(dataViewModel: CrosswordDataViewModel) {
         }
     )
 
-    NavHost(navController = navController, startDestination = Screen.List.route) {
-        composable(route = Screen.List.route) {
+    NavHost(navController = navController, startDestination = NavRoute.List.route) {
+        composable(route = NavRoute.List.route) {
             CrosswordListScreen(
                 navController = navController,
                 settingsVm = settingsViewModel,
-                dataViewModel = dataViewModel)
+                dataViewModel = dataViewModel
+            )
         }
-        composable(route = Screen.Settings.route) {
+        composable(route = NavRoute.Settings.route) {
             SettingsScreen(vm = settingsViewModel) {
                 navController.popBackStack()
             }
         }
         composable(
-            route = Screen.Crossword.route + "?crosswordId={crosswordId}",
+            route = NavRoute.Crossword.route + "?crosswordId={crosswordId}",
             arguments = listOf(
                 navArgument("crosswordId") {
                     type = NavType.StringType

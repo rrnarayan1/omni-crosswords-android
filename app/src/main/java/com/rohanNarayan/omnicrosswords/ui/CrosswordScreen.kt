@@ -117,33 +117,28 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween) {
                     Row {
-                        ToolbarIconButton(
-                            image = Icons.AutoMirrored.Filled.RotateLeft,
-                            action = { vm.toggleDirection() },
-                            description = "Toggle Direction"
-                        )
+                        CrosswordToolbarIconButton(image = Icons.AutoMirrored.Filled.RotateLeft,
+                            description = "Toggle Direction") {
+                            vm.toggleDirection()
+                        }
 
-                        ToolbarIconButton(
-                            image = Icons.Default.Support,
-                            action = { vm.solveCell() },
-                            description = "Solve Cell"
-                        )
+                        CrosswordToolbarIconButton(image = Icons.Default.Support, description = "Solve Cell") {
+                            vm.solveCell()
+                        }
                     }
 
                     ScrollableText(text = activeClue ?: "", fontSize = settings.value.clueFontSize)
 
                     Row {
-                        ToolbarIconButton(
-                            image = Icons.Default.ChevronLeft,
-                            action = { vm.goToPreviousClue() },
-                            description = "Previous Clue"
-                        )
+                        CrosswordToolbarIconButton(image = Icons.Default.ChevronLeft,
+                            description = "Previous Clue") {
+                            vm.goToPreviousClue()
+                        }
 
-                        ToolbarIconButton(
-                            image = Icons.Default.ChevronRight,
-                            action = { vm.goToNextClue() },
-                            description = "Next Clue"
-                        )
+                        CrosswordToolbarIconButton(image = Icons.Default.ChevronRight,
+                            description = "Next Clue") {
+                            vm.goToNextClue()
+                        }
                     }
 
                 }
@@ -246,7 +241,7 @@ fun ScrollableText(text: String, fontSize: Int) {
 }
 
 @Composable
-fun ToolbarIconButton(image: ImageVector, action: () -> Unit, description: String) {
+fun CrosswordToolbarIconButton(image: ImageVector, description: String, action: () -> Unit) {
     Box(modifier = Modifier.padding(horizontal = 2.dp).clickable { action() }) {
         Icon(imageVector = image,
             contentDescription = description,

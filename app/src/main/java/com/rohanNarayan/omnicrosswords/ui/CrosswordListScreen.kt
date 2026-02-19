@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.rohanNarayan.omnicrosswords.data.Crossword
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
+import com.rohanNarayan.omnicrosswords.ui.nav.NavRoute
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
 import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
 import kotlinx.coroutines.flow.Flow
@@ -50,7 +51,7 @@ fun CrosswordListScreen(navController: NavController, settingsVm: SettingsViewMo
             TopAppBar(
                 title = { Text("Crosswords", fontWeight = FontWeight.Bold) },
                 actions = {
-                    IconButton(onClick = { navController.navigate(route = Screen.Settings.route) }) {
+                    IconButton(onClick = { navController.navigate(route = NavRoute.Settings.route) }) {
                         Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
                     }
                 },
