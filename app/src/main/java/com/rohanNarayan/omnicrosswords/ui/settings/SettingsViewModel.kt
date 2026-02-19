@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(private val settingsManager: SettingsManager) : ViewModel() {
-    // Convert Flow to StateFlow for Compose to consume
     val settings = settingsManager.settingsFlow.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Lazily,
@@ -31,5 +30,19 @@ class SettingsViewModel(private val settingsManager: SettingsManager) : ViewMode
         viewModelScope.launch {
             settingsManager.toggleStringSetInclusion(key, value)
         }
+    }
+
+    fun getDeletionDayOptions(): Map<Int, String> {
+        val dayValues = (2 ..< 22).toMutableList()
+        val dayStrings = dayValues.map { "$it days" }.toMutableList()
+        dayValues.add(-1)
+        dayStrings.add("Never")
+        return dayValues.zip(dayStrings).toMap()
+    }
+
+    fun getFontSizeOptions(): Map<Int, String> {
+        val fontValues = (12 ..< 20).toList()
+        val fontStrings = fontValues.map { it.toString() }
+        return fontValues.zip(fontStrings).toMap()
     }
 }

@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import com.rohanNarayan.omnicrosswords.data.Crossword
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
+import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.Calendar
@@ -35,7 +36,7 @@ import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrosswordListView(navController: NavController, settingsVm: SettingsViewModel, dataViewModel: CrosswordDataViewModel) {
+fun CrosswordListScreen(navController: NavController, settingsVm: SettingsViewModel, dataViewModel: CrosswordDataViewModel) {
     val settings = settingsVm.settings.collectAsState()
     val crosswordListFlow = dataViewModel.localGetAllRecords(showSolved = settings.value.showSolvedPuzzles)
     val crosswordList = crosswordListFlow.collectAsState(initial = emptyList())
@@ -59,7 +60,6 @@ fun CrosswordListView(navController: NavController, settingsVm: SettingsViewMode
             )
         }
     ) { padding ->
-        val horizontalPadding = 16.dp
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

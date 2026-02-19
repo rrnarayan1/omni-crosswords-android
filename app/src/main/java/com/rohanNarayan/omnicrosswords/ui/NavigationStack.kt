@@ -31,7 +31,7 @@ fun NavigationStack(dataViewModel: CrosswordDataViewModel) {
 
     NavHost(navController = navController, startDestination = Screen.List.route) {
         composable(route = Screen.List.route) {
-            CrosswordListView(
+            CrosswordListScreen(
                 navController = navController,
                 settingsVm = settingsViewModel,
                 dataViewModel = dataViewModel)

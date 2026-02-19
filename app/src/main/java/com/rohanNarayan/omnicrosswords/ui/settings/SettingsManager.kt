@@ -7,12 +7,11 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.rohanNarayan.omnicrosswords.ui.utils.allOutlets
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 private val Context.dataStore by preferencesDataStore(name = "settings")
-val allOutlets = setOf("LA Times", "The Atlantic", "Newsday", "New Yorker", "USA Today",
-    "Vox", "NYT Syndicated", "Universal", "NYT Mini", "Crossword Club")
 
 class SettingsManager(private val context: Context) {
 
