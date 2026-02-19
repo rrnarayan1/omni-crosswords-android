@@ -29,7 +29,7 @@ import com.rohanNarayan.omnicrosswords.ui.utils.toFormattedDate
 import com.rohanNarayan.omnicrosswords.ui.utils.verticalPadding
 
 @Composable
-fun CrosswordListItemView(navController: NavController, crossword: Crossword) {
+fun CrosswordListItem(navController: NavController, crossword: Crossword) {
     val outletName = crossword.outletName
     val formattedDate = toFormattedDate(crossword.date)
     val title = "$outletName - $formattedDate"
