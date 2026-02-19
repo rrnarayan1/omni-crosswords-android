@@ -39,13 +39,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
+import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
+import com.rohanNarayan.omnicrosswords.ui.utils.smallHorizontalPadding
+import com.rohanNarayan.omnicrosswords.ui.utils.verticalPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,6 +73,9 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
         val settings = settingsVm.settings.collectAsState()
         val focusRequester = remember { FocusRequester() }
         val keyboardController = LocalSoftwareKeyboardController.current
+        val widthInDp: Float = with(LocalDensity.current) {
+            LocalWindowInfo.current.containerSize.width.toDp().value
+        }
 
         Scaffold(
             topBar = {
@@ -82,9 +91,10 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
         ) { padding ->
             Column(modifier = Modifier.fillMaxSize().padding(padding),
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(modifier = Modifier.padding(10.dp).fillMaxWidth()) {
+
+                Box(modifier = Modifier.fillMaxWidth().padding(vertical = verticalPadding)) {
                     CrosswordTextField(vm = vm, focusRequester = focusRequester)
-                    val boxWidth = ((LocalConfiguration.current.screenWidthDp - 40) / crossword.width).toInt()
+                    val boxWidth = (widthInDp - smallHorizontalPadding.value*2) / crossword.width
 
                     Column(modifier = Modifier.align(Alignment.Center)) {
                         for (row in 0 until crossword.height) {
@@ -93,7 +103,7 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                                     val tag = (row * crossword.width + column).toInt()
                                     val letter = state.entry.getOrElse(tag) { "" }
                                     val isHighlighted = state.highlighted.contains(tag)
-                                    CrosswordCellView(
+                                    CrosswordCell(
                                         value = letter,
                                         correctValue = crossword.solution[tag],
                                         errorTrackingEnabled = state.errorTrackingEnabled,
@@ -112,139 +122,10 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                         }
                     }
                 }
-                Row(modifier = Modifier.fillMaxWidth().height(30.dp).padding(horizontal = 20.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween) {
-                    Row {
-                        CrosswordToolbarIconButton(image = Icons.AutoMirrored.Filled.RotateLeft,
-                            description = "Toggle Direction") {
-                            vm.toggleDirection()
-                        }
 
-                        CrosswordToolbarIconButton(image = Icons.Default.Support, description = "Solve Cell") {
-                            vm.solveCell()
-                        }
-                    }
-
-                    ScrollableText(text = activeClue ?: "", fontSize = settings.value.clueFontSize)
-
-                    Row {
-                        CrosswordToolbarIconButton(image = Icons.Default.ChevronLeft,
-                            description = "Previous Clue") {
-                            vm.goToPreviousClue()
-                        }
-
-                        CrosswordToolbarIconButton(image = Icons.Default.ChevronRight,
-                            description = "Next Clue") {
-                            vm.goToNextClue()
-                        }
-                    }
-
-                }
+                CrosswordClueToolbar(vm = vm, activeClue = activeClue,
+                    clueFontSize = settings.value.clueFontSize)
             }
         }
-    }
-}
-
-@Composable
-fun CrosswordCellView(
-    value: String,
-    correctValue: String,
-    errorTrackingEnabled: Boolean,
-    symbol: Int,
-    isFocusedTag: Boolean,
-    isHighlighted: Boolean,
-    boxWidth: Int,
-    onClick: () -> Unit
-) {
-    val isDarkMode = isSystemInDarkTheme()
-    val isEditable = symbol != -1
-    val isCellRed = errorTrackingEnabled && value != "" && value != correctValue
-    val backgroundColor = when {
-        !isEditable -> Color.Black
-        isCellRed && isFocusedTag -> Color(0xBAFF3B30)
-        isCellRed && isHighlighted -> Color(0x80FF3B30)
-        isCellRed -> Color(0x64FF3B30)
-        isDarkMode && isFocusedTag -> Color(0xCA0A84FF)
-        isDarkMode && isHighlighted -> Color(0x800A84FF)
-        !isDarkMode && isFocusedTag -> Color(0x960A84FF)
-        !isDarkMode && isHighlighted -> Color(0x400A84FF)
-        isDarkMode -> Color(0xFF636366)
-        else -> MaterialTheme.colorScheme.surface // white or grey
-    }
-
-    Box(
-        modifier = Modifier
-            .size(boxWidth.dp)
-            .border(0.5.dp, Color.Black)
-            .background(backgroundColor)
-            .clickable(enabled = isEditable) { onClick() },
-        contentAlignment = Alignment.Center
-    ) {
-        if (isEditable) {
-            val fontSize = if (value.length == 1) boxWidth * 0.8 else (boxWidth.toFloat() / value.length)
-            Text(
-                text = value,
-                style = TextStyle(fontSize = fontSize.toInt().sp)
-            )
-
-            if (symbol in 1000..<10000) {
-                // 1000 means cell should be circled,
-                // 10000 means cell should be shaded
-                Canvas(modifier = Modifier.size(boxWidth.dp)) {
-                    drawCircle(
-                        color = Color.Black,
-                        style = Stroke(width = 1f),
-                        radius = boxWidth.toFloat(),
-                        center = center
-                    )
-                }
-            }
-
-            if (symbol % 1000 != 0) {
-                val clueNum = symbol % 1000
-                Text(
-                    text = clueNum.toString(),
-                    style = TextStyle(fontSize = (boxWidth*0.2).sp),
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(2.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun ScrollableText(text: String, fontSize: Int) {
-    val scrollState = rememberScrollState()
-
-    LaunchedEffect(text) {
-        scrollState.scrollTo(0)
-    }
-
-    Column(
-        modifier = Modifier
-            .width((LocalConfiguration.current.screenWidthDp - 150).dp)
-            .height(30.dp)
-            .padding(horizontal = 15.dp)
-            .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = text,
-            lineHeight = (fontSize + 1).sp,
-            fontSize = fontSize.sp
-        )
-    }
-}
-
-@Composable
-fun CrosswordToolbarIconButton(image: ImageVector, description: String, action: () -> Unit) {
-    Box(modifier = Modifier.padding(horizontal = 2.dp).clickable { action() }) {
-        Icon(imageVector = image,
-            contentDescription = description,
-            modifier = Modifier.height(30.dp)
-        )
     }
 }
