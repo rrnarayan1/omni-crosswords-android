@@ -11,8 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
-import com.rohanNarayan.omnicrosswords.ui.CrosswordListScreen
-import com.rohanNarayan.omnicrosswords.ui.CrosswordScreen
+import com.rohanNarayan.omnicrosswords.ui.listscreen.CrosswordListScreen
+import com.rohanNarayan.omnicrosswords.ui.crosswordscreen.CrosswordScreen
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsManager
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsScreen
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel

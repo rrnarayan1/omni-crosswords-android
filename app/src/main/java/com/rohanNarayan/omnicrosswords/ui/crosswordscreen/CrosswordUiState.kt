@@ -1,4 +1,4 @@
-package com.rohanNarayan.omnicrosswords.ui
+package com.rohanNarayan.omnicrosswords.ui.crosswordscreen
 
 data class CrosswordUiState(
     val entry: List<String> = emptyList(),

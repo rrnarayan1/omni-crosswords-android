@@ -1,4 +1,4 @@
-package com.rohanNarayan.omnicrosswords.ui
+package com.rohanNarayan.omnicrosswords.ui.crosswordscreen
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack

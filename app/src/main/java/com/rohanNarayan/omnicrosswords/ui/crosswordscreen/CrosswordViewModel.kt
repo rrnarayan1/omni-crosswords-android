@@ -1,4 +1,4 @@
-package com.rohanNarayan.omnicrosswords.ui
+package com.rohanNarayan.omnicrosswords.ui.crosswordscreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.collections.get
 
 class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, settingsVm: SettingsViewModel): ViewModel() {
     private var _crossword: Crossword = crossword

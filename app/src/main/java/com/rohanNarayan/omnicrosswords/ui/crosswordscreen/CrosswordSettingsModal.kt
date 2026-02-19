@@ -1,4 +1,4 @@
-package com.rohanNarayan.omnicrosswords.ui
+package com.rohanNarayan.omnicrosswords.ui.crosswordscreen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
