@@ -49,8 +49,8 @@ fun CrosswordTextField(vm: CrosswordViewModel, focusRequester: FocusRequester) {
             )
         )
     }
+
     CompositionLocalProvider(LocalTextToolbar provides emptyTextToolbar) {
-        // Your HiddenInput goes here
         BasicTextField(
             value = textFieldValue,
             onValueChange = { newValue ->

@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rohanNarayan.omnicrosswords.ui.theme.*
 
 @Composable
 fun CrosswordCell(
@@ -35,14 +36,14 @@ fun CrosswordCell(
     val isCellRed = errorTrackingEnabled && value != "" && value != correctValue
     val backgroundColor = when {
         !isEditable -> Color.Black
-        isCellRed && isFocusedTag -> Color(0xBAFF3B30)
-        isCellRed && isHighlighted -> Color(0x80FF3B30)
-        isCellRed -> Color(0x64FF3B30)
-        isDarkMode && isFocusedTag -> Color(0xCA0A84FF)
-        isDarkMode && isHighlighted -> Color(0x800A84FF)
-        !isDarkMode && isFocusedTag -> Color(0x960A84FF)
-        !isDarkMode && isHighlighted -> Color(0x400A84FF)
-        isDarkMode -> Color(0xFF636366)
+        isCellRed && isFocusedTag -> RedError70
+        isCellRed && isHighlighted -> RedError50
+        isCellRed -> RedError40
+        isDarkMode && isFocusedTag -> BlueFocused80
+        isDarkMode && isHighlighted -> BlueFocused50
+        !isDarkMode && isFocusedTag -> BlueFocused60
+        !isDarkMode && isHighlighted -> BlueFocused25
+        isDarkMode -> GreyBackground
         else -> MaterialTheme.colorScheme.surface // white or grey
     }
 
@@ -75,6 +76,7 @@ fun CrosswordCell(
             }
 
             if (symbol % 1000 != 0) {
+                // clue number
                 val clueNum = symbol % 1000
                 Text(
                     text = clueNum.toString(),
