@@ -1,5 +1,8 @@
 package com.rohanNarayan.omnicrosswords.ui.crosswordscreen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,8 +46,6 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
             vm.getActiveClue()
         }
         val settings = settingsVm.settings.collectAsState()
-        val focusRequester = remember { FocusRequester() }
-        val keyboardController = LocalSoftwareKeyboardController.current
         val widthInDp: Float = with(LocalDensity.current) {
             LocalWindowInfo.current.containerSize.width.toDp().value
         }
@@ -59,13 +60,24 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                     onRebusModeChange = { vm.toggleRebusMode() },
                     goBack = goBack
                 )
+            },
+            bottomBar = {
+                AnimatedVisibility(
+                    visible = state.focusedTag != -1,
+                    enter = slideInVertically(initialOffsetY = { it }), // Slide up from bottom
+                    exit = slideOutVertically(targetOffsetY = { it })   // Slide down out of view
+                ) {
+                    CompactCrosswordKeyboard(
+                        onKeyClick = { vm.onInputReceived(it.toString()) },
+                        onDelete = { vm.onBackspace() }
+                    )
+                }
             }
         ) { padding ->
             Column(modifier = Modifier.fillMaxSize().padding(padding),
                 horizontalAlignment = Alignment.CenterHorizontally) {
 
                 Box(modifier = Modifier.fillMaxWidth().padding(vertical = verticalPadding)) {
-                    CrosswordTextField(vm = vm, focusRequester = focusRequester)
                     val boxWidth = (widthInDp - smallHorizontalPadding.value * 2) / crossword.width
 
                     Column(modifier = Modifier.align(Alignment.Center)) {
@@ -85,8 +97,6 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                                         boxWidth = boxWidth,
                                         onClick = {
                                             vm.onCellTap(tag)
-                                            focusRequester.requestFocus()
-                                            keyboardController?.show()
                                         }
                                     )
                                 }

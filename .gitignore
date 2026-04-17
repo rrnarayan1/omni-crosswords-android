@@ -78,6 +78,7 @@ captures/
 .idea/dictionaries
 .idea/libraries
 .idea/caches
+.idea/deploymentTargetSelector.xml
 
 !/gradle/wrapper/gradle-wrapper.jar
 
