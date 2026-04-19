@@ -58,7 +58,7 @@ fun CompactCrosswordKeyboard(
                     // Add extra spacer for the middle row to give it that staggered look
                     if (rowIndex == 1) Spacer(modifier = Modifier.width(12.dp))
 
-                    // Add Shift button that doesn't do anything
+                    // Add Blank button that doesn't do anything
                     if (rowIndex == 2) {
                         KeyButton(
                             text = "",

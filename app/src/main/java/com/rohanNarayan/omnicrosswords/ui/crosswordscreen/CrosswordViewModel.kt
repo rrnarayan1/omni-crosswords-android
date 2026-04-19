@@ -177,14 +177,14 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
     //endregion
 
     //region Text Field manipulation
-    fun onInputReceived(char: String) {
+    fun onInputReceived(char: Char) {
         val currentState = _uiState.value
 
-        if (char == "." || char.length > 1 || currentState.isSolved) {
+        if (char == '.' || currentState.isSolved) {
             return
         }
 
-        if (char == " ") {
+        if (char == ' ') {
             if (_settingsVm.settings.value.spaceTogglesDirection) {
                 toggleDirection()
             } else {
