@@ -69,7 +69,8 @@ class CrosswordDataViewModel(private val dao: CrosswordDao, private val db: Fire
                         tagToClueMap = tagToCluesList,
                         clueToTagsMap = clueToTagsMap,
                         isSolved = false,
-                        isHidden = false
+                        isHidden = false,
+                        elapsedTime = 0,
                     )
                 }
             }

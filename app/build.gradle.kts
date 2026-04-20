@@ -12,6 +12,10 @@ android {
     }
 
     defaultConfig {
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+
         applicationId = "com.rohanNarayan.omnicrosswords"
         minSdk = 26
         targetSdk = 36

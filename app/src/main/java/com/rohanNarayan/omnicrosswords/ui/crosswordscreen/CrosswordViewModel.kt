@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rohanNarayan.omnicrosswords.data.Crossword
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
-import com.rohanNarayan.omnicrosswords.ui.settings.SettingsState
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
 import com.rohanNarayan.omnicrosswords.ui.utils.getClueId
 import com.rohanNarayan.omnicrosswords.ui.utils.getNextClueID
