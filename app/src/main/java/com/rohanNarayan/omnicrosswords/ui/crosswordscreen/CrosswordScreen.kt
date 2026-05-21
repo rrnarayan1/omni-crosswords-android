@@ -135,10 +135,12 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                         }
                     }
 
-                    CrosswordClueToolbar(
-                        vm = vm, activeClue = activeClue,
-                        clueFontSize = settings.value.clueFontSize
-                    )
+                    if (state.focusedTag != -1) {
+                        CrosswordClueToolbar(
+                            vm = vm, activeClue = activeClue,
+                            clueFontSize = settings.value.clueFontSize
+                        )
+                    }
                 }
             }
         }
