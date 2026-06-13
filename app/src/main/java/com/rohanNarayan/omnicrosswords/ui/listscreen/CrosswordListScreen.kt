@@ -68,7 +68,7 @@ fun CrosswordListScreen(navController: NavController, settingsVm: SettingsViewMo
             contentPadding = PaddingValues(horizontal = horizontalPadding),
         ) {
             items(crosswordList.value) { crossword ->
-                CrosswordListItem(navController = navController, crossword = crossword)
+                CrosswordListItem(navController = navController, crossword = crossword, settingsVm = settingsVm)
                 HorizontalDivider(
                     modifier = Modifier.padding(horizontal = horizontalPadding),
                     thickness = 1.dp,

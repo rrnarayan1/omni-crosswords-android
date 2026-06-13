@@ -24,6 +24,7 @@ class SettingsManager(private val context: Context) {
         val SPACE_TOGGLES_DIRECTION = booleanPreferencesKey("space_toggles_direction")
         val SUBSCRIBED_OUTLETS = stringSetPreferencesKey("subscribed_outlets")
         val CLUE_FONT_SIZE = intPreferencesKey("clue_font_size")
+        val SHOW_TIMER = booleanPreferencesKey("show_timer")
     }
 
     val settingsFlow: Flow<SettingsState> = context.dataStore.data.map { prefs ->
@@ -34,7 +35,8 @@ class SettingsManager(private val context: Context) {
             deletionDays = prefs[DELETION_DAYS] ?: 14,
             spaceTogglesDirection = prefs[SPACE_TOGGLES_DIRECTION] ?: false,
             subscribedOutlets = prefs[SUBSCRIBED_OUTLETS] ?: allOutlets,
-            clueFontSize = prefs[CLUE_FONT_SIZE] ?: 14
+            clueFontSize = prefs[CLUE_FONT_SIZE] ?: 14,
+            showTimer = prefs[SHOW_TIMER] ?: true
         )
     }
 
@@ -72,4 +74,5 @@ data class SettingsState(
     val spaceTogglesDirection: Boolean = false,
     val subscribedOutlets: Set<String> = allOutlets,
     val clueFontSize: Int = 14,
+    val showTimer: Boolean = true,
 )

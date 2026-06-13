@@ -67,6 +67,10 @@ fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
                 vm.updateBooleanSetting(SettingsManager.SHOW_SOLVED_PUZZLES, it)
             }
 
+            ToggleSetting(label = "Show timer", enabled = settings.showTimer) {
+                vm.updateBooleanSetting(SettingsManager.SHOW_TIMER, it)
+            }
+
             ToggleSetting(label = "Default error tracking",
                 enabled = settings.defaultErrorTracking,
             ) {

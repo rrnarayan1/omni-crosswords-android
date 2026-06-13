@@ -12,10 +12,14 @@ import com.rohanNarayan.omnicrosswords.ui.utils.getNextTagAndCheck
 import com.rohanNarayan.omnicrosswords.ui.utils.getPreviousClueID
 import com.rohanNarayan.omnicrosswords.ui.utils.getPreviousTag
 import com.rohanNarayan.omnicrosswords.ui.utils.isGoingAcross
+import com.rohanNarayan.omnicrosswords.ui.utils.toTime
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.collections.get
 
@@ -31,10 +35,13 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
             it.copy(
                 entry = _crossword.entry,
                 errorTrackingEnabled = _settingsVm.settings.value.defaultErrorTracking,
-                isSolved = _crossword.isSolved
+                isSolved = _crossword.isSolved,
+                elapsedSeconds = _crossword.elapsedTime
             )
         }
     }
+
+    private var timerJob: Job? = null
 
     fun getActiveClue(): String? {
         val currentState = _uiState.value
@@ -67,6 +74,11 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
             return
         }
         val currentState = _uiState.value
+
+        if (currentState.focusedTag == -1) {
+            maybeStartTimer()
+        }
+
         var newGoingAcross = goingAcross ?: currentState.goingAcross
         val currentDirection = if (currentState.goingAcross) "D" else "A"
         if (_crossword.tagToClueMap[tag][currentDirection]?.isEmpty() ?: true) {
@@ -246,11 +258,42 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
     fun saveEntry(newEntry: List<String>) {
         val isSolved: Boolean = newEntry == _crossword.solution
         _uiState.update { it.copy(entry = newEntry, isSolved = isSolved) }
-        val newCrossword: Crossword = _crossword.copy(entry = newEntry, isSolved = isSolved)
+        val currentTime = _uiState.value.elapsedSeconds
+        val newCrossword: Crossword = _crossword.copy(entry = newEntry, isSolved = isSolved, elapsedTime = currentTime)
         viewModelScope.launch {
             _dataVm.localInsert(
                 crossword = newCrossword
             )
         }
     }
+
+    //region Timer Utilities
+    private fun maybeStartTimer() {
+        timerJob?.cancel()
+        if (!_settingsVm.settings.value.showTimer || _uiState.value.isSolved) {
+            return
+        }
+        timerJob = viewModelScope.launch {
+            while (isActive) {
+                delay(1000)
+                if (_uiState.value.isSolved) {
+                    stopTimer()
+                }
+                val newTime = _uiState.value.elapsedSeconds + 1
+                _uiState.update { it.copy(elapsedSeconds = newTime) }
+            }
+        }
+    }
+
+    fun stopTimer() {
+        timerJob?.cancel()
+    }
+
+    fun getTimerValue(): String {
+        if (_crossword.isSolved) {
+            return toTime(_crossword.elapsedTime)
+        }
+        return toTime(_uiState.value.elapsedSeconds)
+    }
+    //endregion
 }

@@ -9,3 +9,9 @@ fun toFormattedDate(date: Long): String {
         .withZone(ZoneId.of("UTC"))
         .format(Instant.ofEpochSecond(date))
 }
+
+fun toTime(elapsedTimeInSeconds: Long): String {
+    val mins = elapsedTimeInSeconds / 60
+    val secs = elapsedTimeInSeconds % 60
+    return "%02d:%02d".format(mins, secs)
+}

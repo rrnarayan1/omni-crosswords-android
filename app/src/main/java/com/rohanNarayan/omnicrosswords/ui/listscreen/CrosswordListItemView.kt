@@ -13,6 +13,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,15 +22,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.rohanNarayan.omnicrosswords.data.Crossword
 import com.rohanNarayan.omnicrosswords.ui.nav.NavRoute
+import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
 import com.rohanNarayan.omnicrosswords.ui.theme.InProgressOrange
 import com.rohanNarayan.omnicrosswords.ui.theme.SuccessGreen
 import com.rohanNarayan.omnicrosswords.ui.utils.getProgress
 import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
 import com.rohanNarayan.omnicrosswords.ui.utils.toFormattedDate
+import com.rohanNarayan.omnicrosswords.ui.utils.toTime
 import com.rohanNarayan.omnicrosswords.ui.utils.verticalPadding
 
 @Composable
-fun CrosswordListItem(navController: NavController, crossword: Crossword) {
+fun CrosswordListItem(navController: NavController, crossword: Crossword, settingsVm: SettingsViewModel) {
+    val settings = settingsVm.settings.collectAsState()
     val outletName = crossword.outletName
     val formattedDate = toFormattedDate(crossword.date)
     val title = "$outletName - $formattedDate"
@@ -45,6 +49,15 @@ fun CrosswordListItem(navController: NavController, crossword: Crossword) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             val iconSize = 20.dp
+
+            if (progress > 0 && settings.value.showTimer) {
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = horizontalPadding),
+                    text = toTime(crossword.elapsedTime)
+                )
+            }
+
             if (crossword.isSolved) {
                 Icon(imageVector = Icons.Default.CheckCircle,
                     tint = SuccessGreen,
