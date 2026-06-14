@@ -16,9 +16,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +37,7 @@ import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
 import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
@@ -39,11 +46,17 @@ import java.util.TimeZone
 @Composable
 fun CrosswordListScreen(navController: NavController, settingsVm: SettingsViewModel, dataViewModel: CrosswordDataViewModel) {
     val settings = settingsVm.settings.collectAsState()
+    var isRefreshing by remember { mutableStateOf(false) }
+    val refreshScope = rememberCoroutineScope()
     val crosswordListFlow = dataViewModel.localGetAllRecords(showSolved = settings.value.showSolvedPuzzles)
     val crosswordList = crosswordListFlow.collectAsState(initial = emptyList())
 
     LaunchedEffect(Unit) {
-       fetchCrosswords(vm = dataViewModel, settingsVm = settingsVm, existingCrosswords = crosswordListFlow)
+        fetchCrosswords(
+            vm = dataViewModel,
+            settingsVm = settingsVm,
+            existingCrosswords = crosswordListFlow
+        )
     }
 
     Scaffold(
@@ -61,19 +74,39 @@ fun CrosswordListScreen(navController: NavController, settingsVm: SettingsViewMo
             )
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentPadding = PaddingValues(horizontal = horizontalPadding),
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = {
+                refreshScope.launch {
+                    isRefreshing = true
+                    fetchCrosswords(
+                        vm = dataViewModel,
+                        settingsVm = settingsVm,
+                        existingCrosswords = crosswordListFlow
+                    )
+                    isRefreshing = false
+                }
+            },
+            modifier = Modifier.fillMaxSize()
         ) {
-            items(crosswordList.value) { crossword ->
-                CrosswordListItem(navController = navController, crossword = crossword, settingsVm = settingsVm)
-                HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = horizontalPadding),
-                    thickness = 1.dp,
-                    color = Color.LightGray
-                )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentPadding = PaddingValues(horizontal = horizontalPadding),
+            ) {
+                items(crosswordList.value) { crossword ->
+                    CrosswordListItem(
+                        navController = navController,
+                        crossword = crossword,
+                        settingsVm = settingsVm
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = horizontalPadding),
+                        thickness = 1.dp,
+                        color = Color.LightGray
+                    )
+                }
             }
         }
     }
