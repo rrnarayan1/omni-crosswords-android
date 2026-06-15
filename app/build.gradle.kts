@@ -68,6 +68,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
 
+    implementation("com.github.jeziellago:compose-markdown:0.7.0")
+
     ksp("androidx.room:room-compiler:$room_version")
 
     testImplementation(libs.junit)

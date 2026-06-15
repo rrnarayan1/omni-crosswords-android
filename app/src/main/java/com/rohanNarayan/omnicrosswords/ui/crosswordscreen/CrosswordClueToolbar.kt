@@ -15,18 +15,19 @@ import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Support
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rohanNarayan.omnicrosswords.ui.utils.crosswordToolbarHeight
 import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
 import com.rohanNarayan.omnicrosswords.ui.utils.smallHorizontalPadding
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun CrosswordClueToolbar(vm: CrosswordViewModel, activeClue: String?, clueFontSize: Int) {
@@ -71,11 +72,12 @@ fun ClueText(text: String, fontSize: Int) {
             .padding(horizontal = horizontalPadding),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = text,
-            lineHeight = (fontSize + 1).sp,
-            fontSize = fontSize.sp
-        )
+        MarkdownText(
+            markdown = text,
+            style = TextStyle(
+                lineHeight = (fontSize + 1).sp,
+                fontSize = fontSize.sp
+        ))
     }
 }
 
