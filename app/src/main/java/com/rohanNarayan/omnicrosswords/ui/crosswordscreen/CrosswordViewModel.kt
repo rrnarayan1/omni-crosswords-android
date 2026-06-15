@@ -191,7 +191,8 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
     fun onInputReceived(char: Char) {
         val currentState = _uiState.value
 
-        if (char == '.' || currentState.isSolved) {
+        if (char == '.' || currentState.isSolved || currentState.focusedTag == -1
+            || currentState.focusedTag > _crossword.entry.size) {
             return
         }
 
