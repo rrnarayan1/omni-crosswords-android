@@ -8,5 +8,6 @@ data class CrosswordUiState(
     val errorTrackingEnabled: Boolean = false,
     val isSolved: Boolean = false,
     val isRebusModeEnabled: Boolean = false,
-    val elapsedSeconds: Long = 0L
+    val elapsedSeconds: Long = 0L,
+    val showKeyboard: Boolean = true,
 )

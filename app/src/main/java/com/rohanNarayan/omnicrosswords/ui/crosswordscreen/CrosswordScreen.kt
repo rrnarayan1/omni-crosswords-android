@@ -73,19 +73,23 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                     onErrorTrackingChange = { vm.toggleErrorTracking() },
                     isRebusModeEnabled = state.isRebusModeEnabled,
                     onRebusModeChange = { vm.toggleRebusMode() },
-                    goBack = goBack
+                    goBack = goBack,
+                    showKeyboard = state.showKeyboard,
+                    onShowKeyboardChange = { vm.toggleShowKeyboard() }
                 )
             },
             bottomBar = {
-                AnimatedVisibility(
-                    visible = state.focusedTag != -1,
-                    enter = slideInVertically(initialOffsetY = { it }), // Slide up from bottom
-                    exit = slideOutVertically(targetOffsetY = { it })   // Slide down out of view
-                ) {
-                    CompactCrosswordKeyboard(
-                        onKeyClick = { vm.onInputReceived(it) },
-                        onDelete = { vm.onBackspace() }
-                    )
+                if (state.showKeyboard) {
+                    AnimatedVisibility(
+                        visible = state.focusedTag != -1,
+                        enter = slideInVertically(initialOffsetY = { it }), // Slide up from bottom
+                        exit = slideOutVertically(targetOffsetY = { it })   // Slide down out of view
+                    ) {
+                        CompactCrosswordKeyboard(
+                            onKeyClick = { vm.onInputReceived(it, true) },
+                            onDelete = { vm.onBackspace() }
+                        )
+                    }
                 }
             }
         ) { padding ->
@@ -99,7 +103,7 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                             vm.onBackspace()
                         } else {
                             val char = keyEvent.utf16CodePoint.toChar()
-                            vm.onInputReceived(char)
+                            vm.onInputReceived(char, false)
                         }
                         true
                     } else {

@@ -24,6 +24,7 @@ import com.rohanNarayan.omnicrosswords.ui.utils.toFormattedDate
 @Composable
 fun CrosswordTopBar(crossword: Crossword, isSolved: Boolean, isErrorTrackingEnabled: Boolean,
                     onErrorTrackingChange: () -> Unit, isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit,
+                    showKeyboard: Boolean, onShowKeyboardChange: () -> Unit,
                     goBack: () -> Unit) {
     var showSettings by remember { mutableStateOf(false) }
     val formattedDate = toFormattedDate(crossword.date)
@@ -51,7 +52,9 @@ fun CrosswordTopBar(crossword: Crossword, isSolved: Boolean, isErrorTrackingEnab
                     isErrorTrackingEnabled = isErrorTrackingEnabled,
                     onErrorTrackingChange = { onErrorTrackingChange() },
                     isRebusModeEnabled = isRebusModeEnabled,
-                    onRebusModeChange = { onRebusModeChange() }
+                    onRebusModeChange = { onRebusModeChange() },
+                    showKeyboard = showKeyboard,
+                    onShowKeyboardChange = { onShowKeyboardChange() },
                 )
             }
         },

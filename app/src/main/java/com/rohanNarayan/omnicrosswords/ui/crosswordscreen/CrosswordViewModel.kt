@@ -122,6 +122,13 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
         }
     }
 
+    fun toggleShowKeyboard() {
+        val currentState = _uiState.value
+        _uiState.update {
+            it.copy(showKeyboard = !currentState.showKeyboard)
+        }
+    }
+
     //endregion
 
     //region crossword clue toolbar actions
@@ -188,7 +195,11 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
     //endregion
 
     //region Text Field manipulation
-    fun onInputReceived(char: Char) {
+    fun onInputReceived(char: Char, fromVirtualKeyboard: Boolean) {
+        if (!fromVirtualKeyboard) {
+            _uiState.update { it.copy(showKeyboard = false) }
+        }
+
         val currentState = _uiState.value
 
         if (char == '.' || currentState.isSolved || currentState.focusedTag == -1

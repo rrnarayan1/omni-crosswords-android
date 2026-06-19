@@ -22,7 +22,8 @@ import com.rohanNarayan.omnicrosswords.ui.utils.verticalPadding
 @Composable
 fun CrosswordSettingsModal(crossword: Crossword, onDismiss: () -> Unit,
                             isErrorTrackingEnabled: Boolean, onErrorTrackingChange: () -> Unit,
-                            isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit) {
+                            isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit,
+                            showKeyboard: Boolean, onShowKeyboardChange: () -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -36,6 +37,12 @@ fun CrosswordSettingsModal(crossword: Crossword, onDismiss: () -> Unit,
 
             ToggleSetting(label = "Rebus Mode", enabled = isRebusModeEnabled) {
                 onRebusModeChange()
+            }
+
+            if (!showKeyboard) {
+                ToggleSetting(label = "Show Keyboard", enabled = showKeyboard) {
+                    onShowKeyboardChange()
+                }
             }
 
             CrosswordInfo(crossword = crossword)
