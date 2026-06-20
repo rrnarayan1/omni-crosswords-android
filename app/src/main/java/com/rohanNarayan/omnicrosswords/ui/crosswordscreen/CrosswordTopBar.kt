@@ -3,6 +3,7 @@ package com.rohanNarayan.omnicrosswords.ui.crosswordscreen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.SettingsInputComponent
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,7 +25,7 @@ import com.rohanNarayan.omnicrosswords.ui.utils.toFormattedDate
 @Composable
 fun CrosswordTopBar(crossword: Crossword, isSolved: Boolean, isErrorTrackingEnabled: Boolean,
                     onErrorTrackingChange: () -> Unit, isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit,
-                    showKeyboard: Boolean, onShowKeyboardChange: () -> Unit,
+                    showKeyboard: Boolean, onShowKeyboardChange: () -> Unit, shareIntent: () -> Unit,
                     goBack: () -> Unit) {
     var showSettings by remember { mutableStateOf(false) }
     val formattedDate = toFormattedDate(crossword.date)
@@ -41,6 +42,10 @@ fun CrosswordTopBar(crossword: Crossword, isSolved: Boolean, isErrorTrackingEnab
             }
         },
         actions = {
+            IconButton(onClick = { shareIntent() }) {
+                Icon(imageVector = Icons.Default.Share, contentDescription = "Share")
+            }
+
             IconButton(onClick = { showSettings = true }) {
                 Icon(imageVector = Icons.Default.SettingsInputComponent, contentDescription = "Settings")
             }

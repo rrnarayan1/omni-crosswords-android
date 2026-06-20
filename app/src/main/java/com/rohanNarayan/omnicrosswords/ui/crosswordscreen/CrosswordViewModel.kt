@@ -1,5 +1,8 @@
 package com.rohanNarayan.omnicrosswords.ui.crosswordscreen
 
+import android.content.Context
+import android.content.Intent
+import android.content.Intent.ACTION_SEND
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rohanNarayan.omnicrosswords.data.Crossword
@@ -11,7 +14,9 @@ import com.rohanNarayan.omnicrosswords.ui.utils.getNextTag
 import com.rohanNarayan.omnicrosswords.ui.utils.getNextTagAndCheck
 import com.rohanNarayan.omnicrosswords.ui.utils.getPreviousClueID
 import com.rohanNarayan.omnicrosswords.ui.utils.getPreviousTag
+import com.rohanNarayan.omnicrosswords.ui.utils.getProgress
 import com.rohanNarayan.omnicrosswords.ui.utils.isGoingAcross
+import com.rohanNarayan.omnicrosswords.ui.utils.toSmallFormattedDate
 import com.rohanNarayan.omnicrosswords.ui.utils.toTime
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -254,6 +259,44 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
     }
     //endregion
 
+    //region Share Text
+    fun shareIntent(context: Context) {
+        val sendIntent: Intent = Intent().apply {
+            action = ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, getShareText())
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        context.startActivity(shareIntent)
+    }
+
+    fun getShareText(): String {
+        val shareTextList = ArrayList<String>()
+        val title = _crossword.outletName + " " + toSmallFormattedDate(_crossword.date)
+        shareTextList.add("🧩 $title")
+
+        if (!_uiState.value.isSolved) {
+            val progressBarSize = 6
+            val emptyBar = "░".repeat(progressBarSize)
+            val progress = getProgress(_crossword.symbols, _uiState.value.entry)
+            val filledSize = (progressBarSize * progress).toInt()
+            val filledInBar = "█".repeat(filledSize)
+            val progressBar = emptyBar.replaceRange(0, filledSize, filledInBar)
+
+            shareTextList.add("⏳ Progress: [$progressBar]")
+        }
+
+        if (_uiState.value.elapsedSeconds > 0) {
+            val timePrefix: String = if(_uiState.value.isSolved) "⏱️ Solve Time: " else "⏱️ Time: "
+            shareTextList.add(timePrefix + toTime(_uiState.value.elapsedSeconds))
+        }
+
+        shareTextList.add("🔲 Omni Crosswords")
+        return shareTextList.joinToString("\n")
+    }
+    //endregion
+
     fun goToNextTagAndCheck() {
         val currentState = _uiState.value
         val width = _crossword.width.toInt()
@@ -278,6 +321,8 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
             )
         }
     }
+
+
 
     //region Timer Utilities
     private fun maybeStartTimer() {

@@ -10,6 +10,12 @@ fun toFormattedDate(date: Long): String {
         .format(Instant.ofEpochSecond(date))
 }
 
+fun toSmallFormattedDate(date: Long): String {
+    return DateTimeFormatter.ofPattern("M/d/yy")
+        .withZone(ZoneId.of("UTC"))
+        .format(Instant.ofEpochSecond(date))
+}
+
 fun toTime(elapsedTimeInSeconds: Long): String {
     val mins = elapsedTimeInSeconds / 60
     val secs = elapsedTimeInSeconds % 60

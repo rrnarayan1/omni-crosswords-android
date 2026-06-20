@@ -28,6 +28,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.key.utf16CodePoint
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -60,6 +61,7 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
             LocalWindowInfo.current.containerSize.width.toDp().value
         }
         val focusRequester = remember { FocusRequester() }
+        val context = LocalContext.current
 
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
@@ -75,6 +77,7 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                     onRebusModeChange = { vm.toggleRebusMode() },
                     goBack = goBack,
                     showKeyboard = state.showKeyboard,
+                    shareIntent = { vm.shareIntent(context) },
                     onShowKeyboardChange = { vm.toggleShowKeyboard() }
                 )
             },
