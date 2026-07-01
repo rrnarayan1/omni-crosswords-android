@@ -4,4 +4,5 @@ sealed class NavRoute(val route: String) {
     object List: NavRoute("list")
     object Crossword: NavRoute("Crossword")
     object Settings: NavRoute("Settings")
+    object Upload: NavRoute("Upload")
 }

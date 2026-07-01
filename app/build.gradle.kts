@@ -46,6 +46,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.documentfile)
     val navigation_compose_version = "2.7.7"
     val room_version = "2.8.4"
 
@@ -69,6 +70,9 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
 
     implementation("com.github.jeziellago:compose-markdown:0.7.0")
+
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 
     ksp("androidx.room:room-compiler:$room_version")
 

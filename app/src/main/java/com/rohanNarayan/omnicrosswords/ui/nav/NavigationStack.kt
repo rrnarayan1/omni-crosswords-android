@@ -16,6 +16,7 @@ import com.rohanNarayan.omnicrosswords.ui.crosswordscreen.CrosswordScreen
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsManager
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsScreen
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
+import com.rohanNarayan.omnicrosswords.ui.upload.UploadScreen
 
 @Composable
 fun NavigationStack(dataViewModel: CrosswordDataViewModel) {
@@ -40,6 +41,11 @@ fun NavigationStack(dataViewModel: CrosswordDataViewModel) {
         }
         composable(route = NavRoute.Settings.route) {
             SettingsScreen(vm = settingsViewModel) {
+                navController.popBackStack()
+            }
+        }
+        composable(route = NavRoute.Upload.route) {
+            UploadScreen(dataViewModel = dataViewModel) {
                 navController.popBackStack()
             }
         }
