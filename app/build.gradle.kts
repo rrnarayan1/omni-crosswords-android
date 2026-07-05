@@ -19,8 +19,8 @@ android {
         applicationId = "com.rohanNarayan.omnicrosswords"
         minSdk = 26
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.0.3"
+        versionCode = 6
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.documentfile)
     val navigation_compose_version = "2.7.7"
     val room_version = "2.8.4"
+    val retrofit_version = "2.11.0"
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -71,8 +72,8 @@ dependencies {
 
     implementation("com.github.jeziellago:compose-markdown:0.7.0")
 
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.retrofit2:retrofit:${retrofit_version}")
+    implementation("com.squareup.retrofit2:converter-gson:${retrofit_version}")
 
     ksp("androidx.room:room-compiler:$room_version")
 
