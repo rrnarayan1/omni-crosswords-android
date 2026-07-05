@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
-import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.ByteArrayOutputStream
 
 class UploadViewModel(dataVm: CrosswordDataViewModel): ViewModel() {
     private val _uploadState = MutableStateFlow(UploadState())
@@ -59,13 +57,13 @@ class UploadViewModel(dataVm: CrosswordDataViewModel): ViewModel() {
         }
     }
 
-    fun uploadFile(context: Context): Boolean {
+    fun uploadFile(context: Context) {
         _uploadState.update {
             it.copy(
                 isUploading = true
             )
         }
-        val fileUri: Uri = _uploadState.value.selectedFileUrl ?: return false
+        val fileUri: Uri = _uploadState.value.selectedFileUrl ?: return
 
         viewModelScope.launch(Dispatchers.IO) {
             val token: String? = getToken()
@@ -85,7 +83,7 @@ class UploadViewModel(dataVm: CrosswordDataViewModel): ViewModel() {
             }
 
             val requestFile = fileBytes.toRequestBody()
-            val response = uploadClient.uploadFile(bearerValue, requestFile)
+            val response = uploadClient.uploadFile(bearerValue, body = requestFile)
 
             if (response.errorBody() != null || response.body() == null) {
                 showErrorMessage("Could not parse file")
@@ -93,19 +91,20 @@ class UploadViewModel(dataVm: CrosswordDataViewModel): ViewModel() {
             }
             _dataVm.formatAndInsert(response.body()!!)
 
-            // reset state to signal to go back to home screen
             _uploadState.update {
-                UploadState()
+                UploadState(
+                    isSuccessfulUpload = true
+                )
             }
         }
-
-        return _uploadState.value.errorMessage == null
     }
 
     fun showErrorMessage(errorMessage: String) {
-        UploadState(
-            errorMessage = errorMessage
-        )
+        _uploadState.update {
+            UploadState(
+                errorMessage = errorMessage
+            )
+        }
     }
 }
 

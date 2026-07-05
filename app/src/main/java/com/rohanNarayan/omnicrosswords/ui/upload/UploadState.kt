@@ -7,4 +7,5 @@ data class UploadState(
     val selectedFileUrl: Uri? = null,
     val selectedFileName: String? = null,
     val isUploading: Boolean = false,
+    val isSuccessfulUpload: Boolean = false,
 )

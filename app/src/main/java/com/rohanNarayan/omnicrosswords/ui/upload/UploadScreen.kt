@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -45,11 +46,16 @@ fun UploadScreen(dataViewModel: CrosswordDataViewModel, goBack: () -> Unit) {
     val uriHandler = LocalUriHandler.current
 
     val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
+        contract = ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         vm.maybeSelectFile(uri, context)
     }
 
+    LaunchedEffect(key1 = state.isSuccessfulUpload) {
+        if (state.isSuccessfulUpload) {
+            goBack()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -85,10 +91,7 @@ fun UploadScreen(dataViewModel: CrosswordDataViewModel, goBack: () -> Unit) {
 
                 Button(
                     onClick = {
-                        val shouldGoBack = vm.uploadFile(context)
-                        if (shouldGoBack) {
-                            goBack()
-                        }
+                        vm.uploadFile(context)
                     },
                     enabled = !state.isUploading
                 ) {
@@ -100,11 +103,11 @@ fun UploadScreen(dataViewModel: CrosswordDataViewModel, goBack: () -> Unit) {
                 }
             } else {
                 Button(onClick = {
-                    filePickerLauncher.launch("*/*")
+                    filePickerLauncher.launch(arrayOf("*/*"))
                 }) {
                     Text("Select .puz file")
                 }
             }
         }
     }
-    }
+}
