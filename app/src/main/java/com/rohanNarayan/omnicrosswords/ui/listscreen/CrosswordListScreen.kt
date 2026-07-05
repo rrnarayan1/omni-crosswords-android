@@ -153,7 +153,7 @@ fun maybeDeleteCrosswords(vm: CrosswordDataViewModel, settingsVm: SettingsViewMo
         val crosswordDate = Date(it.date * 1000)
         if (deletionDate != null && deletionDate > crosswordDate) {
             vm.localDelete(it)
-        } else if (!subscribedOutlets.contains(it.outletName)) {
+        } else if (!subscribedOutlets.contains(it.outletName) && !it.isCustom) {
             vm.localDelete(it)
         }
     }

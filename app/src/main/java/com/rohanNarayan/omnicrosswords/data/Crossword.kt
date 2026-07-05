@@ -26,7 +26,8 @@ data class Crossword (
 
     @ColumnInfo(name="is_solved") val isSolved: Boolean,
     @ColumnInfo(name="is_hidden") val isHidden: Boolean,
-    @ColumnInfo(name="elapsed_time", defaultValue = "0") val elapsedTime: Long
+    @ColumnInfo(name="elapsed_time", defaultValue = "0") val elapsedTime: Long,
+    @ColumnInfo(name="is_custom", defaultValue = "0") val isCustom: Boolean
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -50,6 +51,7 @@ data class Crossword (
         if (!tagToClueMap.equals(other.tagToClueMap)) return false
         if (!clueToTagsMap.equals(other.clueToTagsMap)) return false
         if (!elapsedTime.equals(other.elapsedTime)) return false
+        if (!isCustom.equals(other.isCustom)) return false
 
         return true
     }
@@ -71,6 +73,7 @@ data class Crossword (
         result = 31 * result + tagToClueMap.hashCode()
         result = 31 * result + clueToTagsMap.hashCode()
         result = 31 * result + elapsedTime.hashCode()
+        result = 31 * result + isCustom.hashCode()
         return result
     }
 }

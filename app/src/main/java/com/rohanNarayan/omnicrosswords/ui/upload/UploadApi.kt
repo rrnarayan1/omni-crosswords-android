@@ -1,5 +1,6 @@
 package com.rohanNarayan.omnicrosswords.ui.upload
 
+import com.rohanNarayan.omnicrosswords.data.CrosswordUploadResponse
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -12,5 +13,5 @@ interface UploadApi {
     suspend fun uploadFile(
         @Header("Authorization") bearer: String,
         @Body body: RequestBody
-    ): Response<ResponseBody>
+    ): Response<CrosswordUploadResponse>
 }

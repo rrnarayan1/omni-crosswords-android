@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream
 
 class UploadViewModel(dataVm: CrosswordDataViewModel): ViewModel() {
     private val _uploadState = MutableStateFlow(UploadState())
+    private val _dataVm: CrosswordDataViewModel = dataVm
     val uploadState: StateFlow<UploadState> = _uploadState.asStateFlow()
     val uploadClient: UploadApi = UploadClient.instance.create(UploadApi::class.java)
 
@@ -85,7 +86,12 @@ class UploadViewModel(dataVm: CrosswordDataViewModel): ViewModel() {
 
             val requestFile = fileBytes.toRequestBody()
             val response = uploadClient.uploadFile(bearerValue, requestFile)
-            response.body()
+
+            if (response.errorBody() != null || response.body() == null) {
+                showErrorMessage("Could not parse file")
+                return@launch
+            }
+            _dataVm.formatAndInsert(response.body()!!)
 
             // reset state to signal to go back to home screen
             _uploadState.update {
