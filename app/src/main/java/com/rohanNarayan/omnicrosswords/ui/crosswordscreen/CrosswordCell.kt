@@ -33,6 +33,7 @@ fun CrosswordCell(
 ) {
     val isDarkMode = isSystemInDarkTheme()
     val isEditable = symbol != -1
+    val isShaded = symbol >= 10000
     val isCellRed = errorTrackingEnabled && value != "" && value != correctValue
     val backgroundColor = when {
         !isEditable -> Color.Black
@@ -43,6 +44,7 @@ fun CrosswordCell(
         isDarkMode && isHighlighted -> BlueFocused50
         !isDarkMode && isFocusedTag -> BlueFocused60
         !isDarkMode && isHighlighted -> BlueFocused25
+        isShaded -> ShadedGrey
         isDarkMode -> GreyBackground
         else -> MaterialTheme.colorScheme.surface // white or grey
     }

@@ -7,5 +7,6 @@ val smallHorizontalPadding: Dp = 8.dp
 val horizontalPadding: Dp = 16.dp
 val verticalPadding: Dp = 8.dp
 val crosswordToolbarHeight: Dp = 30.dp
+val maximumCellSize: Dp = 96.dp
 val allOutlets = setOf("LA Times", "The Atlantic", "Newsday", "New Yorker", "USA Today",
     "Vox", "NYT Syndicated", "Universal", "NYT Mini", "Crossword Club")

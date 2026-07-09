@@ -35,8 +35,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
 import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
+import com.rohanNarayan.omnicrosswords.ui.utils.maximumCellSize
 import com.rohanNarayan.omnicrosswords.ui.utils.smallHorizontalPadding
 import com.rohanNarayan.omnicrosswords.ui.utils.verticalPadding
+import kotlin.math.min
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,6 +121,7 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                 ) {
 
                     Box(modifier = Modifier.fillMaxWidth().padding(vertical = verticalPadding)) {
+                        val maxWidth = maximumCellSize.value
                         val boxWidth = (widthInDp - smallHorizontalPadding.value * 2) / crossword.width
 
                         Column(modifier = Modifier.align(Alignment.Center)) {
@@ -135,7 +138,7 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                                             symbol = crossword.symbols[tag],
                                             isFocusedTag = (tag == state.focusedTag),
                                             isHighlighted = isHighlighted,
-                                            boxWidth = boxWidth,
+                                            boxWidth = min(maxWidth, boxWidth),
                                             onClick = { vm.onCellTap(tag) }
                                         )
                                     }

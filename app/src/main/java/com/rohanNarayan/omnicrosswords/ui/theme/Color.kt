@@ -10,5 +10,6 @@ val RedError50 = Color(0x80FF3B30)
 val RedError40 = Color(0x64FF3B30)
 
 val GreyBackground = Color(0xFF636366)
+val ShadedGrey = Color(0xFFaeaeb2)
 val SuccessGreen = Color(0x9934C759)
 val InProgressOrange = Color(0xFFFF9500)
