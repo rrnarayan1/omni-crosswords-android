@@ -3,15 +3,21 @@ package com.rohanNarayan.omnicrosswords.ui.listscreen
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -32,51 +38,87 @@ import com.rohanNarayan.omnicrosswords.ui.utils.toTime
 import com.rohanNarayan.omnicrosswords.ui.utils.verticalPadding
 
 @Composable
-fun CrosswordListItem(navController: NavController, crossword: Crossword, settingsVm: SettingsViewModel) {
+fun CrosswordListItem(navController: NavController, crossword: Crossword, settingsVm: SettingsViewModel,
+                      onDismiss: () -> Unit) {
     val settings = settingsVm.settings.collectAsState()
     val outletName = crossword.outletName
     val formattedDate = toFormattedDate(crossword.date)
     val title = "$outletName - $formattedDate"
+    val swipeToDismissBoxState = rememberSwipeToDismissBoxState()
 
-    Row(modifier = Modifier.fillMaxWidth()
-        .padding(horizontal = horizontalPadding, vertical = verticalPadding)
-        .clickable {navController.navigate(route = NavRoute.Crossword.route + "?crosswordId=${crossword.id}")},
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+    SwipeToDismissBox(
+        state = swipeToDismissBoxState,
+        modifier = Modifier.fillMaxWidth(),
+        enableDismissFromStartToEnd = false,
+        onDismiss = {
+            when (swipeToDismissBoxState.dismissDirection) {
+                SwipeToDismissBoxValue.EndToStart -> {
+                    onDismiss()
+                }
+                SwipeToDismissBoxValue.StartToEnd -> {}
+                SwipeToDismissBoxValue.Settled -> {}
+            }
+        },
+        backgroundContent = {
+            when (swipeToDismissBoxState.dismissDirection) {
+                SwipeToDismissBoxValue.EndToStart -> {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Remove item",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize(Alignment.CenterEnd)
+                            .padding(horizontal = horizontalPadding),
+                        tint = Color.Gray
+                    )
+                }
+                SwipeToDismissBoxValue.StartToEnd -> {}
+                SwipeToDismissBoxValue.Settled -> {}
+            }
+        }
     ) {
-        Text(title)
-        val progress = getProgress(symbols = crossword.symbols, entry = crossword.entry)
+        Row(modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = horizontalPadding, vertical = verticalPadding)
+            .clickable {navController.navigate(route = NavRoute.Crossword.route + "?crosswordId=${crossword.id}")},
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(title)
+            val progress = getProgress(symbols = crossword.symbols, entry = crossword.entry)
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            val iconSize = 20.dp
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val iconSize = 20.dp
 
-            if (progress > 0 && settings.value.showTimer) {
-                Text(
-                    modifier = Modifier
-                        .padding(horizontal = horizontalPadding),
-                    text = toTime(crossword.elapsedTime)
-                )
+                if (progress > 0 && settings.value.showTimer) {
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = horizontalPadding),
+                        text = toTime(crossword.elapsedTime)
+                    )
+                }
+
+                if (crossword.isSolved) {
+                    Icon(imageVector = Icons.Default.CheckCircle,
+                        tint = SuccessGreen,
+                        modifier = Modifier.size(iconSize),
+                        contentDescription = "Solved")
+                } else if (progress > 0) {
+                    CircularProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier.size(iconSize),
+                        color = InProgressOrange,
+                        strokeWidth = 4.dp,
+                        strokeCap = StrokeCap.Round
+                    )
+                }
+
+                if (swipeToDismissBoxState.dismissDirection == SwipeToDismissBoxValue.Settled) {
+                    Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "Open",
+                        tint = Color.Gray,
+                    )
+                }
             }
-
-            if (crossword.isSolved) {
-                Icon(imageVector = Icons.Default.CheckCircle,
-                    tint = SuccessGreen,
-                    modifier = Modifier.size(iconSize),
-                    contentDescription = "Solved")
-            } else if (progress > 0) {
-                CircularProgressIndicator(
-                    progress = { progress },
-                    modifier = Modifier.size(iconSize),
-                    color = InProgressOrange,
-                    strokeWidth = 4.dp,
-                    strokeCap = StrokeCap.Round
-                )
-            }
-
-            Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = "Open",
-                tint = Color.Gray,
-            )
         }
     }
 }

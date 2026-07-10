@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CrosswordDao {
-    @Query("SELECT * from crossword WHERE is_solved IN (0, :showSolved) ORDER BY date DESC, outlet_name ASC")
-    fun getAll(showSolved: Boolean): Flow<List<Crossword>>
+    @Query("SELECT * from crossword WHERE is_solved IN (0, :showSolved) AND is_hidden = :showOnlyHidden ORDER BY date DESC, outlet_name ASC")
+    fun getAll(showSolved: Boolean, showOnlyHidden: Boolean): Flow<List<Crossword>>
 
     @Query("SELECT * from crossword WHERE id= :id")
     fun get(id: String): Flow<Crossword>

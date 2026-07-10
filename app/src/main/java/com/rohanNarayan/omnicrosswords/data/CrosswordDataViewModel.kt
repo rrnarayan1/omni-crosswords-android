@@ -116,8 +116,8 @@ class CrosswordDataViewModel(private val dao: CrosswordDao, private val db: Fire
         )
     }
 
-    fun localGetAllRecords(showSolved: Boolean): Flow<List<Crossword>> {
-        return dao.getAll(showSolved = showSolved)
+    fun localGetAllRecords(showSolved: Boolean, showOnlyHidden: Boolean = false): Flow<List<Crossword>> {
+        return dao.getAll(showSolved = showSolved, showOnlyHidden = showOnlyHidden)
     }
 
     fun localGet(id: String): Flow<Crossword> {
