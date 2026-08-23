@@ -36,6 +36,7 @@ import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
 import com.rohanNarayan.omnicrosswords.ui.nav.NavRoute
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
 import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
+import com.rohanNarayan.omnicrosswords.ui.utils.smallHorizontalPadding
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -100,7 +101,7 @@ fun CrosswordListScreen(navController: NavController, settingsVm: SettingsViewMo
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding),
-                contentPadding = PaddingValues(horizontal = horizontalPadding),
+                contentPadding = PaddingValues(horizontal = smallHorizontalPadding),
             ) {
                 items(crosswordList.value, key = { it.id }) { crossword ->
                     CrosswordListItem(

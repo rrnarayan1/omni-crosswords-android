@@ -106,11 +106,16 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                     if (keyEvent.type == KeyEventType.KeyDown) {
                         if (keyEvent.key == Key.Backspace) {
                             vm.onBackspace()
+                            true
                         } else {
                             val char = keyEvent.utf16CodePoint.toChar()
-                            vm.onInputReceived(char, false)
+                            if (!char.isLetter()) {
+                                false
+                            } else {
+                                vm.onInputReceived(char, false)
+                                true
+                            }
                         }
-                        true
                     } else {
                         false
                     }
