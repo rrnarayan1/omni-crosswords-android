@@ -45,7 +45,6 @@ fun CompactCrosswordKeyboard(
     ) {
         Column(
             modifier = Modifier
-                .padding(bottom = 8.dp) // Extra breathability above the system bar
                 .padding(horizontal = 4.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -55,7 +54,7 @@ fun CompactCrosswordKeyboard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
                 ) {
-                    // Add extra spacer for the middle row to give it that staggered look
+                    // Add extra spacer for the middle row to give it a staggered look
                     if (rowIndex == 1) Spacer(modifier = Modifier.width(12.dp))
 
                     // Add Blank button that doesn't do anything
@@ -114,7 +113,7 @@ fun KeyButton(
 ) {
     Box(
         modifier = modifier
-            .height(42.dp) // Fixed small height
+            .height(42.dp)
             .clip(RoundedCornerShape(4.dp))
             .background(containerColor)
             .clickable { onClick() },

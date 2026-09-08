@@ -7,9 +7,13 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,6 +35,7 @@ import androidx.compose.ui.input.key.utf16CodePoint
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
@@ -62,12 +67,17 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
         val widthInDp: Float = with(LocalDensity.current) {
             LocalWindowInfo.current.containerSize.width.toDp().value
         }
+        val scrollState = rememberScrollState()
         val focusRequester = remember { FocusRequester() }
         val context = LocalContext.current
 
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
         }
+
+        val maxWidth = maximumCellSize.value
+        var boxWidth = (widthInDp - smallHorizontalPadding.value * 2) / crossword.width
+        boxWidth = min(maxWidth, boxWidth)
 
         Scaffold(
             topBar = {
@@ -84,16 +94,29 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                 )
             },
             bottomBar = {
-                if (state.showKeyboard) {
-                    AnimatedVisibility(
-                        visible = state.focusedTag != -1,
-                        enter = slideInVertically(initialOffsetY = { it }), // Slide up from bottom
-                        exit = slideOutVertically(targetOffsetY = { it })   // Slide down out of view
-                    ) {
-                        CompactCrosswordKeyboard(
-                            onKeyClick = { vm.onInputReceived(it, true) },
-                            onDelete = { vm.onBackspace() }
+                Column(modifier = Modifier.fillMaxWidth()
+                    .padding(bottom = 8.dp), // Accommodate the system bar
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    if (state.focusedTag != -1) {
+                        CrosswordClueToolbar(
+                            vm = vm,
+                            width = boxWidth * crossword.width,
+                            activeClue = activeClue,
+                            clueFontSize = settings.value.clueFontSize
                         )
+                    }
+
+                    if (state.showKeyboard) {
+                        AnimatedVisibility(
+                            visible = state.focusedTag != -1,
+                            enter = slideInVertically(initialOffsetY = { it }), // Slide up from bottom
+                            exit = slideOutVertically(targetOffsetY = { it })   // Slide down out of view
+                        ) {
+                            CompactCrosswordKeyboard(
+                                onKeyClick = { vm.onInputReceived(it, true) },
+                                onDelete = { vm.onBackspace() }
+                            )
+                        }
                     }
                 }
             }
@@ -121,14 +144,12 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                     }
                 }) {
                 Column(
-                    modifier = Modifier.fillMaxSize().padding(padding),
+                    modifier = Modifier.fillMaxSize()
+                        .padding(padding)
+                        .verticalScroll(scrollState),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
                     Box(modifier = Modifier.fillMaxWidth().padding(vertical = verticalPadding)) {
-                        val maxWidth = maximumCellSize.value
-                        val boxWidth = (widthInDp - smallHorizontalPadding.value * 2) / crossword.width
-
                         Column(modifier = Modifier.align(Alignment.Center)) {
                             for (row in 0 until crossword.height) {
                                 Row {
@@ -143,7 +164,7 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                                             symbol = crossword.symbols[tag],
                                             isFocusedTag = (tag == state.focusedTag),
                                             isHighlighted = isHighlighted,
-                                            boxWidth = min(maxWidth, boxWidth),
+                                            boxWidth = boxWidth,
                                             onClick = { vm.onCellTap(tag) }
                                         )
                                     }
@@ -153,11 +174,6 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                     }
 
                     if (state.focusedTag != -1) {
-                        CrosswordClueToolbar(
-                            vm = vm, activeClue = activeClue,
-                            clueFontSize = settings.value.clueFontSize
-                        )
-
                         if (settings.value.showTimer) {
                             Text(
                                 modifier = Modifier
@@ -166,6 +182,8 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                                 text = vm.getTimerValue()
                             )
                         }
+
+                        Spacer(modifier = Modifier.weight(1f))
                     }
                 }
             }
