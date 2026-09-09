@@ -1,5 +1,6 @@
 package com.rohanNarayan.omnicrosswords.ui.listscreen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -7,19 +8,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +39,7 @@ import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
 import com.rohanNarayan.omnicrosswords.ui.utils.toFormattedDate
 import com.rohanNarayan.omnicrosswords.ui.utils.toTime
 import com.rohanNarayan.omnicrosswords.ui.utils.verticalPadding
+import kotlinx.coroutines.launch
 
 @Composable
 fun CrosswordListItem(navController: NavController, crossword: Crossword, settingsVm: SettingsViewModel,
@@ -45,41 +49,54 @@ fun CrosswordListItem(navController: NavController, crossword: Crossword, settin
     val formattedDate = toFormattedDate(crossword.date)
     val title = "$outletName - $formattedDate"
     val swipeToDismissBoxState = rememberSwipeToDismissBoxState()
+    val scope = rememberCoroutineScope()
+    fun resetSwipeState() {
+        scope.launch {
+            swipeToDismissBoxState.reset()
+        }
+    }
 
     SwipeToDismissBox(
         state = swipeToDismissBoxState,
         modifier = Modifier.fillMaxWidth(),
         enableDismissFromStartToEnd = false,
-        onDismiss = {
-            when (swipeToDismissBoxState.dismissDirection) {
-                SwipeToDismissBoxValue.EndToStart -> {
-                    onDismiss()
-                }
-                SwipeToDismissBoxValue.StartToEnd -> {}
-                SwipeToDismissBoxValue.Settled -> {}
-            }
-        },
         backgroundContent = {
             when (swipeToDismissBoxState.dismissDirection) {
                 SwipeToDismissBoxValue.EndToStart -> {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Remove item",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .wrapContentSize(Alignment.CenterEnd)
+                    Row(modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.End) {
+                        IconButton(modifier = Modifier
+                            .background(Color.Gray)
                             .padding(horizontal = horizontalPadding),
-                        tint = Color.Gray
-                    )
+                            onClick = { resetSwipeState() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Undo,
+                                contentDescription = "Undo",
+                                tint = Color.White
+                            )
+                        }
+                        IconButton(modifier = Modifier
+                            .background(Color.Red)
+                            .padding(horizontal = horizontalPadding),
+                            onClick = onDismiss) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Remove item",
+                                tint = Color.White
+                            )
+                        }
+                    }
+
                 }
                 SwipeToDismissBoxValue.StartToEnd -> {}
                 SwipeToDismissBoxValue.Settled -> {}
             }
         }
     ) {
-        Row(modifier = Modifier.fillMaxWidth()
+        Row(modifier = Modifier
+            .fillMaxWidth()
             .padding(horizontal = horizontalPadding, vertical = verticalPadding)
-            .clickable {navController.navigate(route = NavRoute.Crossword.route + "?crosswordId=${crossword.id}")},
+            .clickable { navController.navigate(route = NavRoute.Crossword.route + "?crosswordId=${crossword.id}") },
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
