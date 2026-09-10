@@ -30,7 +30,8 @@ fun CrosswordSettingsModal(crossword: Crossword, onDismiss: () -> Unit,
         sheetState = sheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() }
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(vertical = verticalPadding, horizontal = horizontalPadding)) {
+        Column(modifier = Modifier.fillMaxWidth()
+            .padding(vertical = verticalPadding, horizontal = horizontalPadding)) {
             ToggleSetting(label = "Error Tracking", enabled = isErrorTrackingEnabled) {
                 onErrorTrackingChange()
             }

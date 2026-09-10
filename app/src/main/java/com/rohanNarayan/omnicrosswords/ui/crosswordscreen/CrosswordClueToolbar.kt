@@ -32,16 +32,9 @@ fun CrosswordClueToolbar(vm: CrosswordViewModel, width: Float, activeClue: Strin
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.SpaceBetween) {
         Row {
-            CrosswordToolbarIconButton(image = buttonData[0].image,
-                leftButton = true,
-                description = buttonData[0].description) {
-                buttonData[0].action()
-            }
+            CrosswordToolbarIconButton(leftButton = true, data = buttonData[0])
 
-            CrosswordToolbarIconButton(image = buttonData[1].image,
-                description = buttonData[1].description) {
-                buttonData[1].action()
-            }
+            CrosswordToolbarIconButton(leftButton = false, data = buttonData[1])
         }
 
         val textWidth = width - (crosswordToolbarHeight.value-4)*4
@@ -51,15 +44,9 @@ fun CrosswordClueToolbar(vm: CrosswordViewModel, width: Float, activeClue: Strin
         }
 
         Row {
-            CrosswordToolbarIconButton(image = buttonData[2].image,
-                description = buttonData[2].description) {
-                buttonData[2].action()
-            }
+            CrosswordToolbarIconButton(leftButton = true, data = buttonData[2])
 
-            CrosswordToolbarIconButton(image = buttonData[3].image,
-                description = buttonData[3].description) {
-                buttonData[3].action()
-            }
+            CrosswordToolbarIconButton(leftButton = false, data = buttonData[3])
         }
     }
 }
@@ -98,13 +85,12 @@ class CrosswordClueToolbarButtonData(
 )
 
 @Composable
-fun CrosswordToolbarIconButton(image: ImageVector, leftButton: Boolean = false, description: String,
-                               action: () -> Unit) {
+fun CrosswordToolbarIconButton(leftButton: Boolean = false, data: CrosswordClueToolbarButtonData) {
     Box(modifier = Modifier
         .padding(start = if(leftButton) 0.dp else 2.dp, end = if(leftButton) 2.dp else 0.dp)
-        .clickable { action() }) {
-        Icon(imageVector = image,
-            contentDescription = description,
+        .clickable { data.action() }) {
+        Icon(imageVector = data.image,
+            contentDescription = data.description,
             modifier = Modifier.height(crosswordToolbarHeight)
         )
     }
