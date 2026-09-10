@@ -8,7 +8,6 @@ import androidx.compose.material.icons.automirrored.filled.RotateLeft
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Support
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rohanNarayan.omnicrosswords.data.Crossword
@@ -206,6 +205,18 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
     //endregion
 
     //region Crossword Toolbar Buttons
+    fun isClueTappable(): Boolean {
+        return _settingsVm.settings.value.clueTapAction != 0
+    }
+
+    fun onClueTap() {
+        return when(_settingsVm.settings.value.clueTapAction) {
+            1 -> { toggleDirection() }
+            2 -> { goToNextClue() }
+            else -> {}
+        }
+    }
+
     fun getButtons(): List<CrosswordClueToolbarButtonData> {
         return listOf(
             getFirstButton(),

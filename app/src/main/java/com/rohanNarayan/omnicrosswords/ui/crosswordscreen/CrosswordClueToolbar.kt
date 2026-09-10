@@ -10,11 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.RotateLeft
-import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Support
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,37 +34,45 @@ fun CrosswordClueToolbar(vm: CrosswordViewModel, width: Float, activeClue: Strin
         Row {
             CrosswordToolbarIconButton(image = buttonData[0].image,
                 leftButton = true,
-                description = buttonData[0].description,
-                action = buttonData[0].action)
+                description = buttonData[0].description) {
+                buttonData[0].action()
+            }
 
             CrosswordToolbarIconButton(image = buttonData[1].image,
-                description = buttonData[1].description,
-                action = buttonData[1].action)
+                description = buttonData[1].description) {
+                buttonData[1].action()
+            }
         }
 
         val textWidth = width - (crosswordToolbarHeight.value-4)*4
-        ClueText(text = activeClue ?: "", textWidth = textWidth, fontSize = clueFontSize)
+        ClueText(text = activeClue ?: "", textWidth = textWidth, fontSize = clueFontSize,
+            isClickEnabled = vm.isClueTappable()) {
+            vm.onClueTap()
+        }
 
         Row {
             CrosswordToolbarIconButton(image = buttonData[2].image,
-                description = buttonData[2].description,
-                action = buttonData[2].action)
+                description = buttonData[2].description) {
+                buttonData[2].action()
+            }
 
             CrosswordToolbarIconButton(image = buttonData[3].image,
-                description = buttonData[3].description,
-                action = buttonData[3].action)
+                description = buttonData[3].description) {
+                buttonData[3].action()
+            }
         }
     }
 }
 
 @Composable
-fun ClueText(text: String, textWidth: Float, fontSize: Int) {
+fun ClueText(text: String, textWidth: Float, fontSize: Int, isClickEnabled: Boolean, onClick: () -> Unit) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .width(textWidth.dp)
             .verticalScroll(scrollState)
-            .padding(horizontal = horizontalPadding),
+            .padding(horizontal = horizontalPadding)
+            .clickable(enabled = isClickEnabled) { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         MarkdownText(

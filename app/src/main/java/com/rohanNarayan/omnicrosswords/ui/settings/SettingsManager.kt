@@ -26,6 +26,7 @@ class SettingsManager(private val context: Context) {
         val CLUE_FONT_SIZE = intPreferencesKey("clue_font_size")
         val SHOW_TIMER = booleanPreferencesKey("show_timer")
         val CLUE_CONTROL_PLACEMENT = intPreferencesKey("clue_control_placement")
+        val CLUE_TAP_ACTION = intPreferencesKey("clue_tap_action")
     }
 
     val settingsFlow: Flow<SettingsState> = context.dataStore.data.map { prefs ->
@@ -38,7 +39,8 @@ class SettingsManager(private val context: Context) {
             subscribedOutlets = prefs[SUBSCRIBED_OUTLETS] ?: allOutlets,
             clueFontSize = prefs[CLUE_FONT_SIZE] ?: 14,
             showTimer = prefs[SHOW_TIMER] ?: true,
-            clueControlPlacement = prefs[CLUE_CONTROL_PLACEMENT] ?: 0
+            clueControlPlacement = prefs[CLUE_CONTROL_PLACEMENT] ?: 0,
+            clueTapAction = prefs[CLUE_TAP_ACTION] ?: 0,
         )
     }
 
@@ -78,4 +80,5 @@ data class SettingsState(
     val clueFontSize: Int = 14,
     val showTimer: Boolean = true,
     val clueControlPlacement: Int = 0,
+    val clueTapAction: Int = 0,
 )

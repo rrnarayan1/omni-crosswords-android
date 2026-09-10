@@ -49,4 +49,8 @@ class SettingsViewModel(private val settingsManager: SettingsManager) : ViewMode
     fun getClueControlPlacementOptions(): Map<Int, String> {
         return mapOf(0 to "Right", 1 to "Split", 2 to "Left")
     }
+
+    fun getClueTapActionOptions(): Map<Int, String> {
+        return mapOf(0 to "Nothing", 1 to "Toggle Direction", 2 to "Next Clue")
+    }
 }

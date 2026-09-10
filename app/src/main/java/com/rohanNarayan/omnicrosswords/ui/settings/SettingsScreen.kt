@@ -93,6 +93,14 @@ fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
                 vm.updateIntSetting(SettingsManager.CLUE_CONTROL_PLACEMENT, it)
             }
 
+            val clueTapBehaviorOptions = vm.getClueTapActionOptions()
+            PickerSetting(label = "Clue tap action",
+                currentLabel = clueTapBehaviorOptions[settings.clueTapAction]!!,
+                options = clueTapBehaviorOptions
+            ) {
+                vm.updateIntSetting(SettingsManager.CLUE_TAP_ACTION, it)
+            }
+
             val currentDays = settings.deletionDays
             val currentDayLabel = if (currentDays == -1) "Never" else "$currentDays days"
 
