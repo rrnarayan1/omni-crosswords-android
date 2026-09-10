@@ -85,6 +85,14 @@ fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
                 vm.updateBooleanSetting(SettingsManager.SPACE_TOGGLES_DIRECTION, it)
             }
 
+            val clueControlPlacementOptions = vm.getClueControlPlacementOptions()
+            PickerSetting(label = "Clue cycle control placement",
+                currentLabel = clueControlPlacementOptions[settings.clueControlPlacement]!!,
+                options = clueControlPlacementOptions
+            ) {
+                vm.updateIntSetting(SettingsManager.CLUE_CONTROL_PLACEMENT, it)
+            }
+
             val currentDays = settings.deletionDays
             val currentDayLabel = if (currentDays == -1) "Never" else "$currentDays days"
 

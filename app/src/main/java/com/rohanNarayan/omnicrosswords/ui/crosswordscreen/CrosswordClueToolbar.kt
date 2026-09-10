@@ -29,37 +29,35 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun CrosswordClueToolbar(vm: CrosswordViewModel, width: Float, activeClue: String?, clueFontSize: Int) {
+    val buttonData = vm.getButtons()
+
     Row(modifier = Modifier
         .width(width.dp)
         .height(crosswordToolbarHeight),
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.SpaceBetween) {
         Row {
-            CrosswordToolbarIconButton(image = Icons.AutoMirrored.Filled.RotateLeft,
-                firstButton = true,
-                description = "Toggle Direction") {
-                vm.toggleDirection()
-            }
+            CrosswordToolbarIconButton(image = buttonData[0].image,
+                leftButton = true,
+                description = buttonData[0].description,
+                action = buttonData[0].action)
 
-            CrosswordToolbarIconButton(image = Icons.Default.Support, firstButton = false,
-                description = "Solve Cell") {
-                vm.solveCell()
-            }
+            CrosswordToolbarIconButton(image = buttonData[1].image,
+                description = buttonData[1].description,
+                action = buttonData[1].action)
         }
 
         val textWidth = width - (crosswordToolbarHeight.value-4)*4
         ClueText(text = activeClue ?: "", textWidth = textWidth, fontSize = clueFontSize)
 
         Row {
-            CrosswordToolbarIconButton(image = Icons.Default.ChevronLeft, firstButton = true,
-                description = "Previous Clue") {
-                vm.goToPreviousClue()
-            }
+            CrosswordToolbarIconButton(image = buttonData[2].image,
+                description = buttonData[2].description,
+                action = buttonData[2].action)
 
-            CrosswordToolbarIconButton(image = Icons.Default.ChevronRight, firstButton = false,
-                description = "Next Clue") {
-                vm.goToNextClue()
-            }
+            CrosswordToolbarIconButton(image = buttonData[3].image,
+                description = buttonData[3].description,
+                action = buttonData[3].action)
         }
     }
 }
@@ -83,11 +81,24 @@ fun ClueText(text: String, textWidth: Float, fontSize: Int) {
     }
 }
 
+enum class CrosswordClueToolbarButton {
+    TOGGLE,
+    SOLVE,
+    PREVIOUS,
+    NEXT
+}
+
+class CrosswordClueToolbarButtonData(
+    var image: ImageVector,
+    var description: String,
+    var action: () -> Unit,
+)
+
 @Composable
-fun CrosswordToolbarIconButton(image: ImageVector, firstButton: Boolean, description: String,
+fun CrosswordToolbarIconButton(image: ImageVector, leftButton: Boolean = false, description: String,
                                action: () -> Unit) {
     Box(modifier = Modifier
-        .padding(start = if(firstButton) 0.dp else 2.dp, end = if(firstButton) 2.dp else 0.dp)
+        .padding(start = if(leftButton) 0.dp else 2.dp, end = if(leftButton) 2.dp else 0.dp)
         .clickable { action() }) {
         Icon(imageVector = image,
             contentDescription = description,

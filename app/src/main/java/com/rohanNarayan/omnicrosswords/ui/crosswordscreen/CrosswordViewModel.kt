@@ -3,6 +3,12 @@ package com.rohanNarayan.omnicrosswords.ui.crosswordscreen
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_SEND
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.RotateLeft
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Support
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rohanNarayan.omnicrosswords.data.Crossword
@@ -196,6 +202,68 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
             clueToTagsMap = _crossword.clueToTagsMap, clues = _crossword.clues, crosswordWidth = _crossword.width.toInt(),
             settings = _settingsVm.settings.value)
         changeFocus(tag = nextTagAndDirection.tag, goingAcross = nextTagAndDirection.goingAcross)
+    }
+    //endregion
+
+    //region Crossword Toolbar Buttons
+    fun getButtons(): List<CrosswordClueToolbarButtonData> {
+        return listOf(
+            getFirstButton(),
+            getSecondButton(),
+            getThirdButton(),
+            getFourthButton()
+        )
+    }
+
+    private val toolbarButtonMap: Map<CrosswordClueToolbarButton, CrosswordClueToolbarButtonData> =
+        mapOf(
+            CrosswordClueToolbarButton.TOGGLE to CrosswordClueToolbarButtonData(
+                image = Icons.AutoMirrored.Filled.RotateLeft,
+                description = "Toggle Direction",
+                action = { toggleDirection() }
+            ),
+            CrosswordClueToolbarButton.SOLVE to CrosswordClueToolbarButtonData(
+                image = Icons.Default.Support,
+                description = "Solve Cell",
+                action = { solveCell() }
+            ),
+            CrosswordClueToolbarButton.PREVIOUS to CrosswordClueToolbarButtonData(
+                image = Icons.Default.ChevronLeft,
+                description = "Previous Clue",
+                action = { goToPreviousClue() }
+            ),
+            CrosswordClueToolbarButton.NEXT to CrosswordClueToolbarButtonData(
+                image = Icons.Default.ChevronRight,
+                description = "Next Clue",
+                action = { goToNextClue() }
+            ),
+        )
+    private fun getFirstButton(): CrosswordClueToolbarButtonData {
+        return when(_settingsVm.settings.value.clueControlPlacement) {
+            1, 2 -> toolbarButtonMap[CrosswordClueToolbarButton.PREVIOUS]!! // split or left
+            else ->  toolbarButtonMap[CrosswordClueToolbarButton.TOGGLE]!! // right
+        }
+    }
+
+    private fun getSecondButton(): CrosswordClueToolbarButtonData {
+        return when(_settingsVm.settings.value.clueControlPlacement) {
+            2 -> toolbarButtonMap[CrosswordClueToolbarButton.NEXT]!! // left
+            else -> toolbarButtonMap[CrosswordClueToolbarButton.SOLVE]!! // split or right
+        }
+    }
+
+    private fun getThirdButton(): CrosswordClueToolbarButtonData {
+        return when(_settingsVm.settings.value.clueControlPlacement) {
+            1, 2 -> toolbarButtonMap[CrosswordClueToolbarButton.TOGGLE]!! // split or left
+            else -> toolbarButtonMap[CrosswordClueToolbarButton.PREVIOUS]!! // right
+        }
+    }
+
+    private fun getFourthButton(): CrosswordClueToolbarButtonData {
+        return when(_settingsVm.settings.value.clueControlPlacement) {
+            2 -> toolbarButtonMap[CrosswordClueToolbarButton.SOLVE]!! // left
+            else -> toolbarButtonMap[CrosswordClueToolbarButton.NEXT]!! // split or right
+        }
     }
     //endregion
 

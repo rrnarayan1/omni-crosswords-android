@@ -45,4 +45,8 @@ class SettingsViewModel(private val settingsManager: SettingsManager) : ViewMode
         val fontStrings = fontValues.map { it.toString() }
         return fontValues.zip(fontStrings).toMap()
     }
+
+    fun getClueControlPlacementOptions(): Map<Int, String> {
+        return mapOf(0 to "Right", 1 to "Split", 2 to "Left")
+    }
 }
