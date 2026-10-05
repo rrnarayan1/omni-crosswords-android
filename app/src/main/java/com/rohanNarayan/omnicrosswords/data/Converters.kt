@@ -18,6 +18,18 @@ class Converters {
     }
 
     @TypeConverter
+    fun fromBooleanList(value: List<Boolean>?): String? {
+        val gson = Gson()
+        return gson.toJson(value)
+    }
+
+    @TypeConverter
+    fun toBooleanList(value: String?): List<Boolean>? {
+        val listType = object : TypeToken<List<Boolean>>() {}.type
+        return Gson().fromJson(value, listType)
+    }
+
+    @TypeConverter
     fun fromIntList(value: List<Int>?): String? {
         val gson = Gson()
         return gson.toJson(value)

@@ -78,6 +78,7 @@ class CrosswordDataViewModel(private val dao: CrosswordDao, private val db: Fire
                 entry[tag] = "."
             }
         }
+        val helpTracking = List(symbols.size) { false }
         val clueToTagsMap: MutableMap<String, MutableList<Int>> = mutableMapOf()
         for (tag in 0..<tagToCluesList.size) {
             for (dir in listOf("A", "D")) {
@@ -112,7 +113,8 @@ class CrosswordDataViewModel(private val dao: CrosswordDao, private val db: Fire
             isSolved = false,
             isHidden = false,
             elapsedTime = 0,
-            isCustom = isCustom
+            isCustom = isCustom,
+            helpTracking = helpTracking,
         )
     }
 
