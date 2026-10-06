@@ -198,7 +198,7 @@ fun CrosswordScaffoldBottomBar(vm: CrosswordViewModel, isVisible: Boolean, showK
     }
     // see if we have space for timer, actions and clue
     heightOfElements += crosswordToolbarHeight.value * 3
-    val useCompactLayout = heightOfElements > totalScreenHeight.value
+    val extraDisplaySpace = totalScreenHeight.value - heightOfElements
 
     Column(modifier = Modifier.fillMaxWidth()
         .padding(bottom = 8.dp), // Accommodate the system bar
@@ -207,7 +207,7 @@ fun CrosswordScaffoldBottomBar(vm: CrosswordViewModel, isVisible: Boolean, showK
             CrosswordClueToolbar(
                 vm = vm,
                 width = boxWidth * crossword.width,
-                useCompactLayout = useCompactLayout,
+                extraDisplaySpace = extraDisplaySpace,
                 activeClue = activeClue,
                 clueFontSize = clueFontSize,
             )

@@ -23,17 +23,17 @@ import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
-fun CrosswordClueToolbar(vm: CrosswordViewModel, useCompactLayout: Boolean, width: Float,
+fun CrosswordClueToolbar(vm: CrosswordViewModel, extraDisplaySpace: Float, width: Float,
                          activeClue: String?, clueFontSize: Int) {
     val buttonData = vm.getButtons()
-
+    val useCompactLayout = extraDisplaySpace < 0
     Column {
         if (!useCompactLayout) {
             Row(
                 modifier = Modifier
                     .width(width.dp)
-                    .height(crosswordToolbarHeight),
-                verticalAlignment = Alignment.Top,
+                    .height(if (extraDisplaySpace > crosswordToolbarHeight.value * 2) crosswordToolbarHeight * 2 else crosswordToolbarHeight),
+                verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 ClueText(

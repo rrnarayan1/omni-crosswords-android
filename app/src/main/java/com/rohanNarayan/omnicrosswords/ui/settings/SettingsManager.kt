@@ -77,7 +77,7 @@ data class SettingsState(
     val deletionDays: Int = 14,
     val spaceTogglesDirection: Boolean = false,
     val subscribedOutlets: Set<String> = allOutlets,
-    val clueFontSize: Int = 14,
+    val clueFontSize: Int = 16,
     val showTimer: Boolean = true,
     val clueControlPlacement: Int = 0,
     val clueTapAction: Int = 0,
