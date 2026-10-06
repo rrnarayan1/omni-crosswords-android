@@ -23,6 +23,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.rohanNarayan.omnicrosswords.ui.utils.keyboardKeyHeight
+import com.rohanNarayan.omnicrosswords.ui.utils.keyboardRowPadding
+import com.rohanNarayan.omnicrosswords.ui.utils.smallHorizontalPadding
+import com.rohanNarayan.omnicrosswords.ui.utils.verticalPadding
 
 @Composable
 fun CompactCrosswordKeyboard(
@@ -45,9 +49,9 @@ fun CompactCrosswordKeyboard(
     ) {
         Column(
             modifier = Modifier
-                .padding(horizontal = 4.dp, vertical = 8.dp),
+                .padding(horizontal = smallHorizontalPadding, vertical = verticalPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+            verticalArrangement = Arrangement.spacedBy(keyboardRowPadding)
         ) {
             rows.forEachIndexed { rowIndex, row ->
                 Row(
@@ -113,7 +117,7 @@ fun KeyButton(
 ) {
     Box(
         modifier = modifier
-            .height(42.dp)
+            .height(keyboardKeyHeight)
             .clip(RoundedCornerShape(4.dp))
             .background(containerColor)
             .clickable { onClick() },

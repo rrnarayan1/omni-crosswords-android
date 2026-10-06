@@ -1,10 +1,12 @@
 package com.rohanNarayan.omnicrosswords.ui.crosswordscreen
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,19 +34,25 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.key.utf16CodePoint
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.rohanNarayan.omnicrosswords.data.Crossword
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
 import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
+import com.rohanNarayan.omnicrosswords.ui.utils.crosswordToolbarHeight
 import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
+import com.rohanNarayan.omnicrosswords.ui.utils.keyboardHeight
 import com.rohanNarayan.omnicrosswords.ui.utils.maximumCellSize
 import com.rohanNarayan.omnicrosswords.ui.utils.smallHorizontalPadding
 import com.rohanNarayan.omnicrosswords.ui.utils.verticalPadding
 import kotlin.math.min
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsViewModel,
@@ -79,113 +87,142 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
         var boxWidth = (widthInDp - smallHorizontalPadding.value * 2) / crossword.width
         boxWidth = min(maxWidth, boxWidth)
 
-        Scaffold(
-            topBar = {
-                CrosswordTopBar(crossword = crossword,
-                    isSolved = state.isSolved,
-                    isErrorTrackingEnabled = state.errorTrackingEnabled,
-                    onErrorTrackingChange = { vm.toggleErrorTracking() },
-                    isRebusModeEnabled = state.isRebusModeEnabled,
-                    onRebusModeChange = { vm.toggleRebusMode() },
-                    goBack = goBack,
-                    showKeyboard = state.showKeyboard,
-                    shareIntent = { vm.shareIntent(context) },
-                    onShowKeyboardChange = { vm.toggleShowKeyboard() }
-                )
-            },
-            bottomBar = {
-                Column(modifier = Modifier.fillMaxWidth()
-                    .padding(bottom = 8.dp), // Accommodate the system bar
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                    if (state.focusedTag != -1) {
-                        CrosswordClueToolbar(
-                            vm = vm,
-                            width = boxWidth * crossword.width,
-                            activeClue = activeClue,
-                            clueFontSize = settings.value.clueFontSize
-                        )
-                    }
+        BoxWithConstraints {
+            val totalScreenHeight = maxHeight
 
-                    if (state.showKeyboard) {
-                        AnimatedVisibility(
-                            visible = state.focusedTag != -1,
-                            enter = slideInVertically(initialOffsetY = { it }), // Slide up from bottom
-                            exit = slideOutVertically(targetOffsetY = { it })   // Slide down out of view
-                        ) {
-                            CompactCrosswordKeyboard(
-                                onKeyClick = { vm.onInputReceived(it, true) },
-                                onDelete = { vm.onBackspace() }
-                            )
-                        }
-                    }
+            Scaffold(
+                topBar = {
+                    CrosswordTopBar(crossword = crossword,
+                        isSolved = state.isSolved,
+                        isErrorTrackingEnabled = state.errorTrackingEnabled,
+                        onErrorTrackingChange = { vm.toggleErrorTracking() },
+                        isRebusModeEnabled = state.isRebusModeEnabled,
+                        onRebusModeChange = { vm.toggleRebusMode() },
+                        goBack = goBack,
+                        showKeyboard = state.showKeyboard,
+                        shareIntent = { vm.shareIntent(context) },
+                        onShowKeyboardChange = { vm.toggleShowKeyboard() }
+                    )
+                },
+                bottomBar = {
+                    CrosswordScaffoldBottomBar(
+                        vm = vm,
+                        isVisible = state.focusedTag != -1,
+                        showKeyboard = state.showKeyboard,
+                        boxWidth = boxWidth,
+                        crossword = crossword,
+                        activeClue = activeClue,
+                        clueFontSize = settings.value.clueFontSize,
+                        totalScreenHeight = totalScreenHeight
+                    )
                 }
-            }
-        ) { padding ->
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .focusRequester(focusRequester)
-                .focusable()
-                .onKeyEvent { keyEvent ->
-                    if (keyEvent.type == KeyEventType.KeyDown) {
-                        if (keyEvent.key == Key.Backspace) {
-                            vm.onBackspace()
-                            true
-                        } else {
-                            val char = keyEvent.utf16CodePoint.toChar()
-                            if (!char.isLetter()) {
-                                false
-                            } else {
-                                vm.onInputReceived(char, false)
+            ) { padding ->
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .focusRequester(focusRequester)
+                    .focusable()
+                    .onKeyEvent { keyEvent ->
+                        if (keyEvent.type == KeyEventType.KeyDown) {
+                            if (keyEvent.key == Key.Backspace) {
+                                vm.onBackspace()
                                 true
+                            } else {
+                                val char = keyEvent.utf16CodePoint.toChar()
+                                if (!char.isLetter()) {
+                                    false
+                                } else {
+                                    vm.onInputReceived(char, false)
+                                    true
+                                }
                             }
+                        } else {
+                            false
                         }
-                    } else {
-                        false
-                    }
-                }) {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                        .padding(padding)
-                        .verticalScroll(scrollState),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(modifier = Modifier.fillMaxWidth().padding(vertical = verticalPadding)) {
-                        Column(modifier = Modifier.align(Alignment.Center)) {
-                            for (row in 0 until crossword.height) {
-                                Row {
-                                    for (column in 0 until crossword.width) {
-                                        val tag = (row * crossword.width + column).toInt()
-                                        val letter = state.entry.getOrElse(tag) { "" }
-                                        val isHighlighted = state.highlighted.contains(tag)
-                                        CrosswordCell(
-                                            value = letter,
-                                            correctValue = crossword.solution[tag],
-                                            errorTrackingEnabled = state.errorTrackingEnabled,
-                                            symbol = crossword.symbols[tag],
-                                            isFocusedTag = (tag == state.focusedTag),
-                                            isHighlighted = isHighlighted,
-                                            boxWidth = boxWidth,
-                                            onClick = { vm.onCellTap(tag) }
-                                        )
+                    }) {
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                            .padding(padding)
+                            .verticalScroll(scrollState),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Box(modifier = Modifier.fillMaxWidth().padding(vertical = verticalPadding)) {
+                            Column(modifier = Modifier.align(Alignment.Center)) {
+                                for (row in 0 until crossword.height) {
+                                    Row {
+                                        for (column in 0 until crossword.width) {
+                                            val tag = (row * crossword.width + column).toInt()
+                                            val letter = state.entry.getOrElse(tag) { "" }
+                                            val isHighlighted = state.highlighted.contains(tag)
+                                            CrosswordCell(
+                                                value = letter,
+                                                correctValue = crossword.solution[tag],
+                                                errorTrackingEnabled = state.errorTrackingEnabled,
+                                                symbol = crossword.symbols[tag],
+                                                isFocusedTag = (tag == state.focusedTag),
+                                                isHighlighted = isHighlighted,
+                                                boxWidth = boxWidth,
+                                                onClick = { vm.onCellTap(tag) }
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    if (state.focusedTag != -1) {
-                        if (settings.value.showTimer) {
-                            Text(
-                                modifier = Modifier
-                                    .align(Alignment.End)
-                                    .padding(horizontal = horizontalPadding),
-                                text = vm.getTimerValue()
-                            )
+                        if (state.focusedTag != -1) {
+                            if (settings.value.showTimer) {
+                                Text(
+                                    modifier = Modifier
+                                        .align(Alignment.End)
+                                        .padding(horizontal = horizontalPadding),
+                                    text = vm.getTimerValue()
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.weight(1f))
                         }
-
-                        Spacer(modifier = Modifier.weight(1f))
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun CrosswordScaffoldBottomBar(vm: CrosswordViewModel, isVisible: Boolean, showKeyboard: Boolean,
+                               boxWidth: Float, crossword: Crossword, activeClue: String?,
+                               clueFontSize: Int, totalScreenHeight: Dp) {
+    var heightOfElements = (crossword.height * boxWidth)
+    if (showKeyboard) {
+        heightOfElements += keyboardHeight.value
+    }
+    // see if we have space for timer, actions and clue
+    heightOfElements += crosswordToolbarHeight.value * 3
+    val useCompactLayout = heightOfElements > totalScreenHeight.value
+
+    Column(modifier = Modifier.fillMaxWidth()
+        .padding(bottom = 8.dp), // Accommodate the system bar
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        if (isVisible) {
+            CrosswordClueToolbar(
+                vm = vm,
+                width = boxWidth * crossword.width,
+                useCompactLayout = useCompactLayout,
+                activeClue = activeClue,
+                clueFontSize = clueFontSize,
+            )
+        }
+
+        if (showKeyboard) {
+            AnimatedVisibility(
+                visible = isVisible,
+                enter = slideInVertically(initialOffsetY = { it }), // Slide up from bottom
+                exit = slideOutVertically(targetOffsetY = { it })   // Slide down out of view
+            ) {
+                CompactCrosswordKeyboard(
+                    onKeyClick = { vm.onInputReceived(it, true) },
+                    onDelete = { vm.onBackspace() }
+                )
             }
         }
     }

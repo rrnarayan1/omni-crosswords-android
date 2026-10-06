@@ -23,30 +23,53 @@ import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
-fun CrosswordClueToolbar(vm: CrosswordViewModel, width: Float, activeClue: String?, clueFontSize: Int) {
+fun CrosswordClueToolbar(vm: CrosswordViewModel, useCompactLayout: Boolean, width: Float,
+                         activeClue: String?, clueFontSize: Int) {
     val buttonData = vm.getButtons()
 
-    Row(modifier = Modifier
-        .width(width.dp)
-        .height(crosswordToolbarHeight),
-        verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.SpaceBetween) {
-        Row {
-            CrosswordToolbarIconButton(leftButton = true, data = buttonData[0])
-
-            CrosswordToolbarIconButton(leftButton = false, data = buttonData[1])
+    Column {
+        if (!useCompactLayout) {
+            Row(
+                modifier = Modifier
+                    .width(width.dp)
+                    .height(crosswordToolbarHeight),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                ClueText(
+                    text = activeClue ?: "", textWidth = width, fontSize = clueFontSize,
+                    isClickEnabled = vm.isClueTappable()
+                ) {
+                    vm.onClueTap()
+                }
+            }
         }
+        Row(modifier = Modifier
+            .width(width.dp)
+            .height(crosswordToolbarHeight),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.SpaceBetween) {
+            Row {
+                CrosswordToolbarIconButton(leftButton = true, data = buttonData[0])
 
-        val textWidth = width - (crosswordToolbarHeight.value-4)*4
-        ClueText(text = activeClue ?: "", textWidth = textWidth, fontSize = clueFontSize,
-            isClickEnabled = vm.isClueTappable()) {
-            vm.onClueTap()
-        }
+                CrosswordToolbarIconButton(leftButton = false, data = buttonData[1])
+            }
 
-        Row {
-            CrosswordToolbarIconButton(leftButton = true, data = buttonData[2])
+            if (useCompactLayout) {
+                val textWidth = width - (crosswordToolbarHeight.value - 4) * 4
+                ClueText(
+                    text = activeClue ?: "", textWidth = textWidth, fontSize = clueFontSize,
+                    isClickEnabled = vm.isClueTappable()
+                ) {
+                    vm.onClueTap()
+                }
+            }
 
-            CrosswordToolbarIconButton(leftButton = false, data = buttonData[3])
+            Row {
+                CrosswordToolbarIconButton(leftButton = true, data = buttonData[2])
+
+                CrosswordToolbarIconButton(leftButton = false, data = buttonData[3])
+            }
         }
     }
 }
