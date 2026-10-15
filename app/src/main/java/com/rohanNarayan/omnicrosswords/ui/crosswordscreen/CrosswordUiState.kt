@@ -2,6 +2,7 @@ package com.rohanNarayan.omnicrosswords.ui.crosswordscreen
 
 data class CrosswordUiState(
     val entry: List<String> = emptyList(),
+    val helpTracking: List<Boolean>? = emptyList(),
     val focusedTag: Int = -1,
     val highlighted: Set<Int> = emptySet(),
     val goingAcross: Boolean = true,

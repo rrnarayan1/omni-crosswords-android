@@ -44,6 +44,7 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
         _uiState.update {
             it.copy(
                 entry = _crossword.entry,
+                helpTracking = _crossword.helpTracking.ifEmpty { null },
                 errorTrackingEnabled = _settingsVm.settings.value.defaultErrorTracking,
                 isSolved = _crossword.isSolved,
                 elapsedSeconds = _crossword.elapsedTime
@@ -120,6 +121,21 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
 
     fun toggleErrorTracking() {
         val currentState = _uiState.value
+
+        if (!currentState.errorTrackingEnabled) {
+            // we're going to turn it on, so check help tracking
+            val newHelpTracking = currentState.helpTracking?.toMutableList()
+            if (newHelpTracking != null) {
+                for (tag in 0..<_crossword.symbols.size) {
+                    if (!currentState.entry[tag].isEmpty()
+                        && currentState.entry[tag] != _crossword.solution[tag]) {
+                        newHelpTracking[tag] = true
+                    }
+                }
+                saveEntry(currentState.entry, newHelpTracking)
+            }
+        }
+
         _uiState.update {
             it.copy(errorTrackingEnabled = !currentState.errorTrackingEnabled)
         }
@@ -147,10 +163,14 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
         val focusedTag = currentState.focusedTag
 
         val newEntry = currentState.entry.toMutableList()
+        val newHelpTracking = currentState.helpTracking?.toMutableList()
         newEntry[focusedTag] = _crossword.solution[focusedTag]
+        if (newHelpTracking != null) {
+            newHelpTracking[focusedTag] = true
+        }
 
         goToNextTagAndCheck()
-        saveEntry(newEntry)
+        saveEntry(newEntry, newHelpTracking)
     }
 
     fun toggleDirection() {
@@ -285,9 +305,11 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
         }
 
         val currentState = _uiState.value
+        val focusedTag = currentState.focusedTag
 
-        if (char == '.' || currentState.isSolved || currentState.focusedTag == -1
-            || currentState.focusedTag > _crossword.entry.size) {
+        if (char == '.' || currentState.isSolved || focusedTag == -1
+            || focusedTag > _crossword.entry.size
+        ) {
             return
         }
 
@@ -300,13 +322,20 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
             return
         }
         val newEntry = currentState.entry.toMutableList()
+        val newHelpTracking = currentState.helpTracking?.toMutableList()
         if (currentState.isRebusModeEnabled) {
-            newEntry[currentState.focusedTag] += char.uppercase()
+            newEntry[focusedTag] += char.uppercase()
         } else {
-            newEntry[currentState.focusedTag] = char.uppercase()
+            newEntry[focusedTag] = char.uppercase()
+            if (newHelpTracking != null
+                && currentState.errorTrackingEnabled
+                && _crossword.solution[focusedTag] != char.uppercase()
+            ) {
+                newHelpTracking[focusedTag] = true
+            }
             goToNextTagAndCheck()
         }
-        saveEntry(newEntry)
+        saveEntry(newEntry, newHelpTracking)
     }
 
     fun onBackspace() {
@@ -390,10 +419,25 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
     }
 
     fun saveEntry(newEntry: List<String>) {
+        saveEntry(newEntry, _uiState.value.helpTracking)
+    }
+
+    fun saveEntry(newEntry: List<String>, newHelpTracking: List<Boolean>?) {
         val isSolved: Boolean = newEntry == _crossword.solution
-        _uiState.update { it.copy(entry = newEntry, isSolved = isSolved) }
+        _uiState.update {
+            it.copy(
+                entry = newEntry,
+                isSolved = isSolved,
+                helpTracking = newHelpTracking
+            )
+        }
         val currentTime = _uiState.value.elapsedSeconds
-        val newCrossword: Crossword = _crossword.copy(entry = newEntry, isSolved = isSolved, elapsedTime = currentTime)
+        val newCrossword: Crossword = _crossword.copy(
+            entry = newEntry,
+            isSolved = isSolved,
+            elapsedTime = currentTime,
+            helpTracking = newHelpTracking ?: emptyList()
+        )
         viewModelScope.launch {
             _dataVm.localInsert(
                 crossword = newCrossword

@@ -77,6 +77,12 @@ fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
                 vm.updateBooleanSetting(SettingsManager.DEFAULT_ERROR_TRACKING, it)
             }
 
+            ToggleSetting(label = "Show help indicators",
+                enabled = settings.showHelpIndicators,
+            ) {
+                vm.updateBooleanSetting(SettingsManager.SHOW_HELP_INDICATORS, it)
+            }
+
             ToggleSetting(label = "Skip completed cells", enabled = settings.skipCompletedCells) {
                 vm.updateBooleanSetting(SettingsManager.SKIP_COMPLETED_CELLS, it)
             }

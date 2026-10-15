@@ -14,6 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -25,6 +28,7 @@ fun CrosswordCell(
     value: String,
     correctValue: String,
     errorTrackingEnabled: Boolean,
+    showHelpReceived: Boolean,
     symbol: Int,
     isFocusedTag: Boolean,
     isHighlighted: Boolean,
@@ -73,6 +77,22 @@ fun CrosswordCell(
                         style = Stroke(width = 1f),
                         radius = boxWidth,
                         center = center
+                    )
+                }
+            }
+
+            if (showHelpReceived) {
+                Canvas(modifier = Modifier.size(boxWidth.dp)) {
+                    val path = Path().apply {
+                        moveTo(4 * size.width / 5f, size.height) // mid-bottom
+                        lineTo(size.width, 4 * size.height / 5f) // mid-right
+                        lineTo(size.width, size.height)      // bottom right
+                        close()                              // Connects back to top point
+                    }
+                    drawPath(
+                        path = path,
+                        color = InProgressOrange,
+                        style = Fill
                     )
                 }
             }

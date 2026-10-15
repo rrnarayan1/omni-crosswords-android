@@ -27,6 +27,7 @@ class SettingsManager(private val context: Context) {
         val SHOW_TIMER = booleanPreferencesKey("show_timer")
         val CLUE_CONTROL_PLACEMENT = intPreferencesKey("clue_control_placement")
         val CLUE_TAP_ACTION = intPreferencesKey("clue_tap_action")
+        val SHOW_HELP_INDICATORS = booleanPreferencesKey("show_help_tracking")
     }
 
     val settingsFlow: Flow<SettingsState> = context.dataStore.data.map { prefs ->
@@ -41,6 +42,7 @@ class SettingsManager(private val context: Context) {
             showTimer = prefs[SHOW_TIMER] ?: true,
             clueControlPlacement = prefs[CLUE_CONTROL_PLACEMENT] ?: 0,
             clueTapAction = prefs[CLUE_TAP_ACTION] ?: 0,
+            showHelpIndicators = prefs[SHOW_HELP_INDICATORS] ?: true
         )
     }
 
@@ -81,4 +83,5 @@ data class SettingsState(
     val showTimer: Boolean = true,
     val clueControlPlacement: Int = 0,
     val clueTapAction: Int = 0,
+    val showHelpIndicators: Boolean = true,
 )

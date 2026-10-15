@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,7 +33,6 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.key.utf16CodePoint
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -153,10 +151,15 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                                             val tag = (row * crossword.width + column).toInt()
                                             val letter = state.entry.getOrElse(tag) { "" }
                                             val isHighlighted = state.highlighted.contains(tag)
+                                            val showHelpReceived: Boolean =
+                                                if(settings.value.showHelpTracking)
+                                                state.helpTracking?.getOrElse(tag) { false }?:false
+                                                else false
                                             CrosswordCell(
                                                 value = letter,
                                                 correctValue = crossword.solution[tag],
                                                 errorTrackingEnabled = state.errorTrackingEnabled,
+                                                showHelpReceived = showHelpReceived,
                                                 symbol = crossword.symbols[tag],
                                                 isFocusedTag = (tag == state.focusedTag),
                                                 isHighlighted = isHighlighted,
