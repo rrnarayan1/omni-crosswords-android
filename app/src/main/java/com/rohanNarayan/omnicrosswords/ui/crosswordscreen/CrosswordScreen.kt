@@ -53,8 +53,10 @@ import kotlin.math.min
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsViewModel,
-                    crosswordId: String?, goBack: () -> Unit) {
+fun CrosswordScreen(
+    dataViewModel: CrosswordDataViewModel, settingsVm: SettingsViewModel,
+    crosswordId: String?, goBack: () -> Unit
+) {
     if (crosswordId == null) {
         return
     }
@@ -63,7 +65,11 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
     if (crosswordState.value != null) {
         val crossword = crosswordState.value!!
         val vm = viewModel {
-            CrosswordViewModel(crossword = crossword, dataVm = dataViewModel, settingsVm = settingsVm)
+            CrosswordViewModel(
+                crossword = crossword,
+                dataVm = dataViewModel,
+                settingsVm = settingsVm
+            )
         }
         val state by vm.uiState.collectAsState()
         val activeClue = remember(state) {
@@ -90,7 +96,8 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
 
             Scaffold(
                 topBar = {
-                    CrosswordTopBar(crossword = crossword,
+                    CrosswordTopBar(
+                        crossword = crossword,
                         isSolved = state.isSolved,
                         isErrorTrackingEnabled = state.errorTrackingEnabled,
                         onErrorTrackingChange = { vm.toggleErrorTracking() },
@@ -115,35 +122,41 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                     )
                 }
             ) { padding ->
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .focusRequester(focusRequester)
-                    .focusable()
-                    .onKeyEvent { keyEvent ->
-                        if (keyEvent.type == KeyEventType.KeyDown) {
-                            if (keyEvent.key == Key.Backspace) {
-                                vm.onBackspace()
-                                true
-                            } else {
-                                val char = keyEvent.utf16CodePoint.toChar()
-                                if (!char.isLetter()) {
-                                    false
-                                } else {
-                                    vm.onInputReceived(char, false)
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .focusRequester(focusRequester)
+                        .focusable()
+                        .onKeyEvent { keyEvent ->
+                            if (keyEvent.type == KeyEventType.KeyDown) {
+                                if (keyEvent.key == Key.Backspace) {
+                                    vm.onBackspace()
                                     true
+                                } else {
+                                    val char = keyEvent.utf16CodePoint.toChar()
+                                    if (!char.isLetter()) {
+                                        false
+                                    } else {
+                                        vm.onInputReceived(char, false)
+                                        true
+                                    }
                                 }
+                            } else {
+                                false
                             }
-                        } else {
-                            false
-                        }
-                    }) {
+                        }) {
                     Column(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
                             .padding(padding)
                             .verticalScroll(scrollState),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Box(modifier = Modifier.fillMaxWidth().padding(vertical = verticalPadding)) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = verticalPadding)
+                        ) {
                             Column(modifier = Modifier.align(Alignment.Center)) {
                                 for (row in 0 until crossword.height) {
                                     Row {
@@ -152,8 +165,9 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
                                             val letter = state.entry.getOrElse(tag) { "" }
                                             val isHighlighted = state.highlighted.contains(tag)
                                             val showHelpReceived: Boolean =
-                                                if(settings.value.showHelpTracking)
-                                                state.helpTracking?.getOrElse(tag) { false }?:false
+                                                if (settings.value.showHelpIndicators)
+                                                    state.helpTracking?.getOrElse(tag) { false }
+                                                        ?: false
                                                 else false
                                             CrosswordCell(
                                                 value = letter,
@@ -192,9 +206,11 @@ fun CrosswordScreen(dataViewModel: CrosswordDataViewModel, settingsVm: SettingsV
 }
 
 @Composable
-fun CrosswordScaffoldBottomBar(vm: CrosswordViewModel, isVisible: Boolean, showKeyboard: Boolean,
-                               boxWidth: Float, crossword: Crossword, activeClue: String?,
-                               clueFontSize: Int, totalScreenHeight: Dp) {
+fun CrosswordScaffoldBottomBar(
+    vm: CrosswordViewModel, isVisible: Boolean, showKeyboard: Boolean,
+    boxWidth: Float, crossword: Crossword, activeClue: String?,
+    clueFontSize: Int, totalScreenHeight: Dp
+) {
     var heightOfElements = (crossword.height * boxWidth)
     if (showKeyboard) {
         heightOfElements += keyboardHeight.value
@@ -203,9 +219,12 @@ fun CrosswordScaffoldBottomBar(vm: CrosswordViewModel, isVisible: Boolean, showK
     heightOfElements += crosswordToolbarHeight.value * 3
     val extraDisplaySpace = totalScreenHeight.value - heightOfElements
 
-    Column(modifier = Modifier.fillMaxWidth()
-        .padding(bottom = 8.dp), // Accommodate the system bar
-        horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp), // Accommodate the system bar
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         if (isVisible) {
             CrosswordClueToolbar(
                 vm = vm,

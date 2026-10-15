@@ -11,5 +11,7 @@ val keyboardKeyHeight: Dp = 48.dp
 val keyboardRowPadding: Dp = 6.dp
 val keyboardHeight: Dp = keyboardKeyHeight * 4 + keyboardRowPadding * 3 + verticalPadding * 2
 val maximumCellSize: Dp = 96.dp
-val allOutlets = setOf("LA Times", "The Atlantic", "Newsday", "New Yorker", "USA Today",
-    "Vox", "NYT Syndicated", "Universal", "NYT Mini", "Crossword Club")
+val allOutlets = setOf(
+    "LA Times", "The Atlantic", "Newsday", "New Yorker", "USA Today",
+    "Vox", "NYT Syndicated", "Universal", "NYT Mini", "Crossword Club"
+)

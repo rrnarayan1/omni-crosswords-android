@@ -33,7 +33,7 @@ class SettingsViewModel(private val settingsManager: SettingsManager) : ViewMode
     }
 
     fun getDeletionDayOptions(): Map<Int, String> {
-        val dayValues = (2 ..< 22).toMutableList()
+        val dayValues = (2..<22).toMutableList()
         val dayStrings = dayValues.map { "$it days" }.toMutableList()
         dayValues.add(-1)
         dayStrings.add("Never")
@@ -41,7 +41,7 @@ class SettingsViewModel(private val settingsManager: SettingsManager) : ViewMode
     }
 
     fun getFontSizeOptions(): Map<Int, String> {
-        val fontValues = (12 ..< 20).toList()
+        val fontValues = (12..<20).toList()
         val fontStrings = fontValues.map { it.toString() }
         return fontValues.zip(fontStrings).toMap()
     }

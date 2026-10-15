@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class UploadViewModel(dataVm: CrosswordDataViewModel): ViewModel() {
+class UploadViewModel(dataVm: CrosswordDataViewModel) : ViewModel() {
     private val _uploadState = MutableStateFlow(UploadState())
     private val _dataVm: CrosswordDataViewModel = dataVm
     val uploadState: StateFlow<UploadState> = _uploadState.asStateFlow()

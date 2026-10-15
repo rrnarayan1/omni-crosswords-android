@@ -1,6 +1,7 @@
 package com.rohanNarayan.omnicrosswords.ui.theme
 
 import androidx.compose.ui.graphics.Color
+
 val BlueFocused80 = Color(0xCA0A84FF)
 val BlueFocused60 = Color(0x960A84FF)
 val BlueFocused50 = Color(0x800A84FF)

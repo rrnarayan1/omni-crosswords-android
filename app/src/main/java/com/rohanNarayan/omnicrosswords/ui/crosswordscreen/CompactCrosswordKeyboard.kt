@@ -66,7 +66,7 @@ fun CompactCrosswordKeyboard(
                         KeyButton(
                             text = "",
                             modifier = Modifier.weight(1f),
-                            onClick = {  }
+                            onClick = { }
                         )
                     }
 

@@ -20,18 +20,23 @@ import com.rohanNarayan.omnicrosswords.ui.utils.verticalPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrosswordSettingsModal(crossword: Crossword, onDismiss: () -> Unit,
-                            isErrorTrackingEnabled: Boolean, onErrorTrackingChange: () -> Unit,
-                            isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit,
-                            showKeyboard: Boolean, onShowKeyboardChange: () -> Unit) {
+fun CrosswordSettingsModal(
+    crossword: Crossword, onDismiss: () -> Unit,
+    isErrorTrackingEnabled: Boolean, onErrorTrackingChange: () -> Unit,
+    isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit,
+    showKeyboard: Boolean, onShowKeyboardChange: () -> Unit
+) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() }
     ) {
-        Column(modifier = Modifier.fillMaxWidth()
-            .padding(vertical = verticalPadding, horizontal = horizontalPadding)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = verticalPadding, horizontal = horizontalPadding)
+        ) {
             ToggleSetting(label = "Error Tracking", enabled = isErrorTrackingEnabled) {
                 onErrorTrackingChange()
             }
@@ -61,8 +66,10 @@ fun CrosswordInfo(crossword: Crossword) {
         crosswordInfo += ("\n" + crossword.copyright)
     }
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(crosswordInfo,
+        Text(
+            crosswordInfo,
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center)
+            textAlign = TextAlign.Center
+        )
     }
 }

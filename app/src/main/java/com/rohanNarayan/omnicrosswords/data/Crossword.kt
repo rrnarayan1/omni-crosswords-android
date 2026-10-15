@@ -5,30 +5,30 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Crossword (
+data class Crossword(
     @PrimaryKey val id: String,
-    @ColumnInfo(name="outlet_name") val outletName: String,
-    @ColumnInfo(name="date") val date: Long,
-    @ColumnInfo(name="title") val title: String,
+    @ColumnInfo(name = "outlet_name") val outletName: String,
+    @ColumnInfo(name = "date") val date: Long,
+    @ColumnInfo(name = "title") val title: String,
 
-    @ColumnInfo(name="author") val author: String,
-    @ColumnInfo(name="copyright") val copyright: String,
-    @ColumnInfo(name="notes") val notes: String,
+    @ColumnInfo(name = "author") val author: String,
+    @ColumnInfo(name = "copyright") val copyright: String,
+    @ColumnInfo(name = "notes") val notes: String,
 
-    @ColumnInfo(name="height") val height: Long,
-    @ColumnInfo(name="width") val width: Long,
-    @ColumnInfo(name="clues") val clues: Map<String, String>,
-    @ColumnInfo(name="solution") val solution: List<String>,
-    @ColumnInfo(name="entry") var entry: List<String>,
-    @ColumnInfo(name="symbols") val symbols: List<Int>,
-    @ColumnInfo(name="tag_to_clue_map") val tagToClueMap: List<Map<String, String>>,
-    @ColumnInfo(name="clue_to_tags_map") val clueToTagsMap: Map<String, List<Int>>,
+    @ColumnInfo(name = "height") val height: Long,
+    @ColumnInfo(name = "width") val width: Long,
+    @ColumnInfo(name = "clues") val clues: Map<String, String>,
+    @ColumnInfo(name = "solution") val solution: List<String>,
+    @ColumnInfo(name = "entry") var entry: List<String>,
+    @ColumnInfo(name = "symbols") val symbols: List<Int>,
+    @ColumnInfo(name = "tag_to_clue_map") val tagToClueMap: List<Map<String, String>>,
+    @ColumnInfo(name = "clue_to_tags_map") val clueToTagsMap: Map<String, List<Int>>,
 
-    @ColumnInfo(name="is_solved") val isSolved: Boolean,
-    @ColumnInfo(name="is_hidden") val isHidden: Boolean,
-    @ColumnInfo(name="elapsed_time", defaultValue = "0") val elapsedTime: Long,
-    @ColumnInfo(name="is_custom", defaultValue = "0") val isCustom: Boolean,
-    @ColumnInfo(name="help_tracking", defaultValue = "[]") val helpTracking: List<Boolean>
+    @ColumnInfo(name = "is_solved") val isSolved: Boolean,
+    @ColumnInfo(name = "is_hidden") val isHidden: Boolean,
+    @ColumnInfo(name = "elapsed_time", defaultValue = "0") val elapsedTime: Long,
+    @ColumnInfo(name = "is_custom", defaultValue = "0") val isCustom: Boolean,
+    @ColumnInfo(name = "help_tracking", defaultValue = "[]") val helpTracking: List<Boolean>
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

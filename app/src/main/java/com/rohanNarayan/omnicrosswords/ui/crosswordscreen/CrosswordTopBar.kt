@@ -23,10 +23,12 @@ import com.rohanNarayan.omnicrosswords.ui.utils.toFormattedDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrosswordTopBar(crossword: Crossword, isSolved: Boolean, isErrorTrackingEnabled: Boolean,
-                    onErrorTrackingChange: () -> Unit, isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit,
-                    showKeyboard: Boolean, onShowKeyboardChange: () -> Unit, shareIntent: () -> Unit,
-                    goBack: () -> Unit) {
+fun CrosswordTopBar(
+    crossword: Crossword, isSolved: Boolean, isErrorTrackingEnabled: Boolean,
+    onErrorTrackingChange: () -> Unit, isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit,
+    showKeyboard: Boolean, onShowKeyboardChange: () -> Unit, shareIntent: () -> Unit,
+    goBack: () -> Unit
+) {
     var showSettings by remember { mutableStateOf(false) }
     val formattedDate = toFormattedDate(crossword.date)
     var title = "${crossword.outletName} - $formattedDate"
@@ -47,7 +49,10 @@ fun CrosswordTopBar(crossword: Crossword, isSolved: Boolean, isErrorTrackingEnab
             }
 
             IconButton(onClick = { showSettings = true }) {
-                Icon(imageVector = Icons.Default.SettingsInputComponent, contentDescription = "Settings")
+                Icon(
+                    imageVector = Icons.Default.SettingsInputComponent,
+                    contentDescription = "Settings"
+                )
             }
 
             if (showSettings) {

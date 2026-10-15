@@ -46,12 +46,20 @@ import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CrosswordListScreen(navController: NavController, settingsVm: SettingsViewModel, dataViewModel: CrosswordDataViewModel) {
+fun CrosswordListScreen(
+    navController: NavController,
+    settingsVm: SettingsViewModel,
+    dataViewModel: CrosswordDataViewModel
+) {
     val settings = settingsVm.settings.collectAsState()
     var isRefreshing by remember { mutableStateOf(false) }
     val refreshScope = rememberCoroutineScope()
-    val crosswordListFlow = dataViewModel.localGetAllRecords(showSolved = settings.value.showSolvedPuzzles)
-    val hiddenCrosswordListFlow = dataViewModel.localGetAllRecords(showSolved = settings.value.showSolvedPuzzles, showOnlyHidden = true)
+    val crosswordListFlow =
+        dataViewModel.localGetAllRecords(showSolved = settings.value.showSolvedPuzzles)
+    val hiddenCrosswordListFlow = dataViewModel.localGetAllRecords(
+        showSolved = settings.value.showSolvedPuzzles,
+        showOnlyHidden = true
+    )
     val crosswordList = crosswordListFlow.collectAsState(initial = emptyList())
 
     LaunchedEffect(Unit) {
@@ -121,9 +129,11 @@ fun CrosswordListScreen(navController: NavController, settingsVm: SettingsViewMo
     }
 }
 
-suspend fun fetchCrosswords(vm: CrosswordDataViewModel, settingsVm: SettingsViewModel,
-                            existingCrosswords: Flow<List<Crossword>>,
-                            hiddenCrosswords: Flow<List<Crossword>>) {
+suspend fun fetchCrosswords(
+    vm: CrosswordDataViewModel, settingsVm: SettingsViewModel,
+    existingCrosswords: Flow<List<Crossword>>,
+    hiddenCrosswords: Flow<List<Crossword>>
+) {
     val maybeExistingCrosswords: List<Crossword>? = existingCrosswords.firstOrNull()
     val maybeHiddenCrosswords: List<Crossword>? = hiddenCrosswords.firstOrNull()
     val existingCrosswordsIds: Set<String> =
@@ -143,15 +153,19 @@ suspend fun fetchCrosswords(vm: CrosswordDataViewModel, settingsVm: SettingsView
                 vm.localInsert(remoteCrossword)
             }
         }
-        maybeDeleteCrosswords(vm = vm, settingsVm = settingsVm,
+        maybeDeleteCrosswords(
+            vm = vm, settingsVm = settingsVm,
             existingCrosswords = maybeExistingCrosswords,
-            hiddenCrosswords = maybeHiddenCrosswords)
+            hiddenCrosswords = maybeHiddenCrosswords
+        )
     }
 }
 
-fun maybeDeleteCrosswords(vm: CrosswordDataViewModel, settingsVm: SettingsViewModel,
-                          existingCrosswords: List<Crossword>?,
-                          hiddenCrosswords: List<Crossword>?) {
+fun maybeDeleteCrosswords(
+    vm: CrosswordDataViewModel, settingsVm: SettingsViewModel,
+    existingCrosswords: List<Crossword>?,
+    hiddenCrosswords: List<Crossword>?
+) {
     if (existingCrosswords == null) {
         return
     }
@@ -159,7 +173,7 @@ fun maybeDeleteCrosswords(vm: CrosswordDataViewModel, settingsVm: SettingsViewMo
     val subscribedOutlets = settingsVm.settings.value.subscribedOutlets
     val deletionDays = settingsVm.settings.value.deletionDays
     val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-    calendar.add(Calendar.DATE, -(deletionDays+1))
+    calendar.add(Calendar.DATE, -(deletionDays + 1))
     val deletionDate: Date? = if (deletionDays != -1) calendar.time else null
 
     allCrosswords.forEach {

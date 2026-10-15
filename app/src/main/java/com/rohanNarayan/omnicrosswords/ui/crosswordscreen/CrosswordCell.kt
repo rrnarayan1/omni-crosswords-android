@@ -15,13 +15,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rohanNarayan.omnicrosswords.ui.theme.*
+import com.rohanNarayan.omnicrosswords.ui.theme.BlueFocused25
+import com.rohanNarayan.omnicrosswords.ui.theme.BlueFocused50
+import com.rohanNarayan.omnicrosswords.ui.theme.BlueFocused60
+import com.rohanNarayan.omnicrosswords.ui.theme.BlueFocused80
+import com.rohanNarayan.omnicrosswords.ui.theme.GreyBackground
+import com.rohanNarayan.omnicrosswords.ui.theme.InProgressOrange
+import com.rohanNarayan.omnicrosswords.ui.theme.RedError40
+import com.rohanNarayan.omnicrosswords.ui.theme.RedError50
+import com.rohanNarayan.omnicrosswords.ui.theme.RedError70
+import com.rohanNarayan.omnicrosswords.ui.theme.ShadedGrey
 
 @Composable
 fun CrosswordCell(
@@ -102,7 +110,7 @@ fun CrosswordCell(
                 val clueNum = symbol % 1000
                 Text(
                     text = clueNum.toString(),
-                    style = TextStyle(fontSize = (boxWidth*0.2).sp),
+                    style = TextStyle(fontSize = (boxWidth * 0.2).sp),
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(2.dp)

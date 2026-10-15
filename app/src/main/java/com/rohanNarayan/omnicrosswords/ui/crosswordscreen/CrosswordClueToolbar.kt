@@ -23,8 +23,10 @@ import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
-fun CrosswordClueToolbar(vm: CrosswordViewModel, extraDisplaySpace: Float, width: Float,
-                         activeClue: String?, clueFontSize: Int) {
+fun CrosswordClueToolbar(
+    vm: CrosswordViewModel, extraDisplaySpace: Float, width: Float,
+    activeClue: String?, clueFontSize: Int
+) {
     val buttonData = vm.getButtons()
     val useCompactLayout = extraDisplaySpace < 0
     Column {
@@ -44,11 +46,13 @@ fun CrosswordClueToolbar(vm: CrosswordViewModel, extraDisplaySpace: Float, width
                 }
             }
         }
-        Row(modifier = Modifier
-            .width(width.dp)
-            .height(crosswordToolbarHeight),
+        Row(
+            modifier = Modifier
+                .width(width.dp)
+                .height(crosswordToolbarHeight),
             verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.SpaceBetween) {
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Row {
                 CrosswordToolbarIconButton(leftButton = true, data = buttonData[0])
 
@@ -75,7 +79,13 @@ fun CrosswordClueToolbar(vm: CrosswordViewModel, extraDisplaySpace: Float, width
 }
 
 @Composable
-fun ClueText(text: String, textWidth: Float, fontSize: Int, isClickEnabled: Boolean, onClick: () -> Unit) {
+fun ClueText(
+    text: String,
+    textWidth: Float,
+    fontSize: Int,
+    isClickEnabled: Boolean,
+    onClick: () -> Unit
+) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -90,7 +100,8 @@ fun ClueText(text: String, textWidth: Float, fontSize: Int, isClickEnabled: Bool
             style = TextStyle(
                 lineHeight = (fontSize + 1).sp,
                 fontSize = fontSize.sp
-        ))
+            )
+        )
     }
 }
 
@@ -109,10 +120,12 @@ class CrosswordClueToolbarButtonData(
 
 @Composable
 fun CrosswordToolbarIconButton(leftButton: Boolean = false, data: CrosswordClueToolbarButtonData) {
-    Box(modifier = Modifier
-        .padding(start = if(leftButton) 0.dp else 2.dp, end = if(leftButton) 2.dp else 0.dp)
-        .clickable { data.action() }) {
-        Icon(imageVector = data.image,
+    Box(
+        modifier = Modifier
+            .padding(start = if (leftButton) 0.dp else 2.dp, end = if (leftButton) 2.dp else 0.dp)
+            .clickable { data.action() }) {
+        Icon(
+            imageVector = data.image,
             contentDescription = data.description,
             modifier = Modifier.height(crosswordToolbarHeight)
         )

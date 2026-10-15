@@ -44,7 +44,10 @@ fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
                 ),
                 actions = {
                     IconButton(onClick = { uriHandler.openUri("https://ko-fi.com/rrnarayan1") }) {
-                        Icon(imageVector = Icons.Default.VolunteerActivism, contentDescription = "Donate")
+                        Icon(
+                            imageVector = Icons.Default.VolunteerActivism,
+                            contentDescription = "Donate"
+                        )
                     }
 
                     IconButton(onClick = { uriHandler.openUri("https://omnicrosswords.app") }) {
@@ -53,15 +56,20 @@ fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
                 },
                 navigationIcon = {
                     IconButton(onClick = { goBack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
                 }
             )
         }
     ) { padding ->
-        Column(modifier = Modifier.padding(padding)
-            .fillMaxWidth()
-            .padding(horizontal = horizontalPadding),
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxWidth()
+                .padding(horizontal = horizontalPadding),
         ) {
             ToggleSetting(label = "Show solved puzzles", enabled = settings.showSolvedPuzzles) {
                 vm.updateBooleanSetting(SettingsManager.SHOW_SOLVED_PUZZLES, it)
@@ -71,13 +79,15 @@ fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
                 vm.updateBooleanSetting(SettingsManager.SHOW_TIMER, it)
             }
 
-            ToggleSetting(label = "Default error tracking",
+            ToggleSetting(
+                label = "Default error tracking",
                 enabled = settings.defaultErrorTracking,
             ) {
                 vm.updateBooleanSetting(SettingsManager.DEFAULT_ERROR_TRACKING, it)
             }
 
-            ToggleSetting(label = "Show help indicators",
+            ToggleSetting(
+                label = "Show help indicators",
                 enabled = settings.showHelpIndicators,
             ) {
                 vm.updateBooleanSetting(SettingsManager.SHOW_HELP_INDICATORS, it)
@@ -87,12 +97,16 @@ fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
                 vm.updateBooleanSetting(SettingsManager.SKIP_COMPLETED_CELLS, it)
             }
 
-            ToggleSetting(label = "Space toggles direction", enabled = settings.spaceTogglesDirection) {
+            ToggleSetting(
+                label = "Space toggles direction",
+                enabled = settings.spaceTogglesDirection
+            ) {
                 vm.updateBooleanSetting(SettingsManager.SPACE_TOGGLES_DIRECTION, it)
             }
 
             val clueControlPlacementOptions = vm.getClueControlPlacementOptions()
-            PickerSetting(label = "Clue cycle control placement",
+            PickerSetting(
+                label = "Clue cycle control placement",
                 currentLabel = clueControlPlacementOptions[settings.clueControlPlacement]!!,
                 options = clueControlPlacementOptions
             ) {
@@ -100,7 +114,8 @@ fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
             }
 
             val clueTapBehaviorOptions = vm.getClueTapActionOptions()
-            PickerSetting(label = "Clue tap action",
+            PickerSetting(
+                label = "Clue tap action",
                 currentLabel = clueTapBehaviorOptions[settings.clueTapAction]!!,
                 options = clueTapBehaviorOptions
             ) {
@@ -110,13 +125,15 @@ fun SettingsScreen(vm: SettingsViewModel, goBack: () -> Unit) {
             val currentDays = settings.deletionDays
             val currentDayLabel = if (currentDays == -1) "Never" else "$currentDays days"
 
-            PickerSetting(label = "Auto-delete puzzles after", currentLabel = currentDayLabel,
+            PickerSetting(
+                label = "Auto-delete puzzles after", currentLabel = currentDayLabel,
                 options = vm.getDeletionDayOptions()
             ) {
                 vm.updateIntSetting(SettingsManager.DELETION_DAYS, it)
             }
 
-            PickerSetting(label = "Clue font size", currentLabel = settings.clueFontSize.toString(),
+            PickerSetting(
+                label = "Clue font size", currentLabel = settings.clueFontSize.toString(),
                 options = vm.getFontSizeOptions()
             ) {
                 vm.updateIntSetting(SettingsManager.CLUE_FONT_SIZE, it)

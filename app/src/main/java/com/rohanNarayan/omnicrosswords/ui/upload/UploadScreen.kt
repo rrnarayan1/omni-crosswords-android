@@ -32,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
-import com.rohanNarayan.omnicrosswords.ui.settings.SettingsViewModel
 import com.rohanNarayan.omnicrosswords.ui.utils.horizontalPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,15 +70,20 @@ fun UploadScreen(dataViewModel: CrosswordDataViewModel, goBack: () -> Unit) {
                 },
                 navigationIcon = {
                     IconButton(onClick = { goBack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
                 }
             )
         }
     ) { padding ->
-        Column(modifier = Modifier.padding(padding)
-            .fillMaxWidth()
-            .padding(horizontal = horizontalPadding),
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxWidth()
+                .padding(horizontal = horizontalPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             state.errorMessage?.let {

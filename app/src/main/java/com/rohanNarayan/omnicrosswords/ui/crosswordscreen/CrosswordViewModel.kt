@@ -31,9 +31,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.collections.get
 
-class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, settingsVm: SettingsViewModel): ViewModel() {
+class CrosswordViewModel(
+    crossword: Crossword,
+    dataVm: CrosswordDataViewModel,
+    settingsVm: SettingsViewModel
+) : ViewModel() {
     private var _crossword: Crossword = crossword
     private var _dataVm: CrosswordDataViewModel = dataVm
     private var _settingsVm: SettingsViewModel = settingsVm
@@ -56,8 +59,10 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
 
     fun getActiveClue(): String? {
         val currentState = _uiState.value
-        val clueId: String? = getClueId(tag = currentState.focusedTag, goingAcross = currentState.goingAcross,
-            tagToClueMap = _crossword.tagToClueMap)
+        val clueId: String? = getClueId(
+            tag = currentState.focusedTag, goingAcross = currentState.goingAcross,
+            tagToClueMap = _crossword.tagToClueMap
+        )
         return _crossword.clues[clueId]
     }
 
@@ -107,8 +112,10 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
      */
     fun setHighlighting() {
         val currentState = _uiState.value
-        val clueId: String? = getClueId(tag = currentState.focusedTag, goingAcross = currentState.goingAcross,
-            tagToClueMap = _crossword.tagToClueMap)
+        val clueId: String? = getClueId(
+            tag = currentState.focusedTag, goingAcross = currentState.goingAcross,
+            tagToClueMap = _crossword.tagToClueMap
+        )
         val tagsForClue: List<Int>? = _crossword.clueToTagsMap[clueId]
         _uiState.update {
             it.copy(highlighted = tagsForClue?.toSet() ?: emptySet())
@@ -128,7 +135,8 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
             if (newHelpTracking != null) {
                 for (tag in 0..<_crossword.symbols.size) {
                     if (!currentState.entry[tag].isEmpty()
-                        && currentState.entry[tag] != _crossword.solution[tag]) {
+                        && currentState.entry[tag] != _crossword.solution[tag]
+                    ) {
                         newHelpTracking[tag] = true
                     }
                 }
@@ -191,17 +199,27 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
         val currentState = _uiState.value
 
         val currentTag = currentState.focusedTag
-        val previousClueId = getPreviousClueID(tag = currentTag, goingAcross = currentState.goingAcross,
-            clues = _crossword.clues, tagToClueMap = _crossword.tagToClueMap)
+        val previousClueId = getPreviousClueID(
+            tag = currentTag, goingAcross = currentState.goingAcross,
+            clues = _crossword.clues, tagToClueMap = _crossword.tagToClueMap
+        )
         val newGoingAcross = isGoingAcross(previousClueId)
         _uiState.update {
             it.copy(goingAcross = newGoingAcross)
         }
         val previousClueStartTag: Int = _crossword.clueToTagsMap[previousClueId]!!.min()
-        val nextTagAndDirection = getNextTagAndCheck(startTag = previousClueStartTag, currentTag = currentTag, goingAcross = newGoingAcross,
-            checkCluesForwards = false,  crosswordEntry = currentState.entry, tagToClueMap = _crossword.tagToClueMap,
-            clueToTagsMap = _crossword.clueToTagsMap, clues = _crossword.clues, crosswordWidth = _crossword.width.toInt(),
-            settings = _settingsVm.settings.value)
+        val nextTagAndDirection = getNextTagAndCheck(
+            startTag = previousClueStartTag,
+            currentTag = currentTag,
+            goingAcross = newGoingAcross,
+            checkCluesForwards = false,
+            crosswordEntry = currentState.entry,
+            tagToClueMap = _crossword.tagToClueMap,
+            clueToTagsMap = _crossword.clueToTagsMap,
+            clues = _crossword.clues,
+            crosswordWidth = _crossword.width.toInt(),
+            settings = _settingsVm.settings.value
+        )
         changeFocus(tag = nextTagAndDirection.tag, goingAcross = nextTagAndDirection.goingAcross)
     }
 
@@ -209,17 +227,27 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
         val currentState = _uiState.value
 
         val currentTag = currentState.focusedTag
-        val nextClueId = getNextClueID(tag = currentTag, goingAcross = currentState.goingAcross,
-            clues = _crossword.clues, tagToClueMap = _crossword.tagToClueMap)
+        val nextClueId = getNextClueID(
+            tag = currentTag, goingAcross = currentState.goingAcross,
+            clues = _crossword.clues, tagToClueMap = _crossword.tagToClueMap
+        )
         val newGoingAcross = isGoingAcross(nextClueId)
         _uiState.update {
             it.copy(goingAcross = newGoingAcross)
         }
         val nextClueStartTag: Int = _crossword.clueToTagsMap[nextClueId]!!.min()
-        val nextTagAndDirection = getNextTagAndCheck(startTag = nextClueStartTag, currentTag = currentTag, goingAcross = newGoingAcross,
-            checkCluesForwards = true, crosswordEntry = currentState.entry, tagToClueMap = _crossword.tagToClueMap,
-            clueToTagsMap = _crossword.clueToTagsMap, clues = _crossword.clues, crosswordWidth = _crossword.width.toInt(),
-            settings = _settingsVm.settings.value)
+        val nextTagAndDirection = getNextTagAndCheck(
+            startTag = nextClueStartTag,
+            currentTag = currentTag,
+            goingAcross = newGoingAcross,
+            checkCluesForwards = true,
+            crosswordEntry = currentState.entry,
+            tagToClueMap = _crossword.tagToClueMap,
+            clueToTagsMap = _crossword.clueToTagsMap,
+            clues = _crossword.clues,
+            crosswordWidth = _crossword.width.toInt(),
+            settings = _settingsVm.settings.value
+        )
         changeFocus(tag = nextTagAndDirection.tag, goingAcross = nextTagAndDirection.goingAcross)
     }
     //endregion
@@ -230,9 +258,15 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
     }
 
     fun onClueTap() {
-        return when(_settingsVm.settings.value.clueTapAction) {
-            1 -> { toggleDirection() }
-            2 -> { goToNextClue() }
+        return when (_settingsVm.settings.value.clueTapAction) {
+            1 -> {
+                toggleDirection()
+            }
+
+            2 -> {
+                goToNextClue()
+            }
+
             else -> {}
         }
     }
@@ -269,29 +303,30 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
                 action = { goToNextClue() }
             ),
         )
+
     private fun getFirstButton(): CrosswordClueToolbarButtonData {
-        return when(_settingsVm.settings.value.clueControlPlacement) {
+        return when (_settingsVm.settings.value.clueControlPlacement) {
             1, 2 -> toolbarButtonMap[CrosswordClueToolbarButton.PREVIOUS]!! // split or left
-            else ->  toolbarButtonMap[CrosswordClueToolbarButton.TOGGLE]!! // right
+            else -> toolbarButtonMap[CrosswordClueToolbarButton.TOGGLE]!! // right
         }
     }
 
     private fun getSecondButton(): CrosswordClueToolbarButtonData {
-        return when(_settingsVm.settings.value.clueControlPlacement) {
+        return when (_settingsVm.settings.value.clueControlPlacement) {
             2 -> toolbarButtonMap[CrosswordClueToolbarButton.NEXT]!! // left
             else -> toolbarButtonMap[CrosswordClueToolbarButton.SOLVE]!! // split or right
         }
     }
 
     private fun getThirdButton(): CrosswordClueToolbarButtonData {
-        return when(_settingsVm.settings.value.clueControlPlacement) {
+        return when (_settingsVm.settings.value.clueControlPlacement) {
             1, 2 -> toolbarButtonMap[CrosswordClueToolbarButton.TOGGLE]!! // split or left
             else -> toolbarButtonMap[CrosswordClueToolbarButton.PREVIOUS]!! // right
         }
     }
 
     private fun getFourthButton(): CrosswordClueToolbarButtonData {
-        return when(_settingsVm.settings.value.clueControlPlacement) {
+        return when (_settingsVm.settings.value.clueControlPlacement) {
             2 -> toolbarButtonMap[CrosswordClueToolbarButton.SOLVE]!! // left
             else -> toolbarButtonMap[CrosswordClueToolbarButton.NEXT]!! // split or right
         }
@@ -345,11 +380,14 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
             newEntry[currentState.focusedTag] = ""
             saveEntry(newEntry)
         } else {
-            val previousTag: Int = getPreviousTag(tag = currentState.focusedTag,
-                goingAcross = currentState.goingAcross, crosswordLength = _crossword.width.toInt())
+            val previousTag: Int = getPreviousTag(
+                tag = currentState.focusedTag,
+                goingAcross = currentState.goingAcross, crosswordLength = _crossword.width.toInt()
+            )
 
             if (previousTag >= 0 && previousTag < _crossword.symbols.count() &&
-                _crossword.symbols[previousTag] != -1) {
+                _crossword.symbols[previousTag] != -1
+            ) {
                 // previous tag is valid, so clear it and go there
                 val newEntry = currentState.entry.toMutableList()
                 newEntry[previousTag] = ""
@@ -396,7 +434,7 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
         }
 
         if (_uiState.value.elapsedSeconds > 0) {
-            val timePrefix: String = if(_uiState.value.isSolved) "⏱️ Solve Time: " else "⏱️ Time: "
+            val timePrefix: String = if (_uiState.value.isSolved) "⏱️ Solve Time: " else "⏱️ Time: "
             shareTextList.add(timePrefix + toTime(_uiState.value.elapsedSeconds))
         }
 
@@ -409,12 +447,22 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
         val currentState = _uiState.value
         val width = _crossword.width.toInt()
         val goingAcross = currentState.goingAcross
-        val nextTag = getNextTag(tag = currentState.focusedTag, goingAcross = goingAcross,
-            crosswordLength = width)
-        val nextTagAndDirection = getNextTagAndCheck(startTag = nextTag, currentTag = currentState.focusedTag,
-            goingAcross = goingAcross, checkCluesForwards = true, crosswordEntry = currentState.entry,
-            tagToClueMap = _crossword.tagToClueMap, clueToTagsMap = _crossword.clueToTagsMap,
-            clues = _crossword.clues, crosswordWidth = width, settings = _settingsVm.settings.value)
+        val nextTag = getNextTag(
+            tag = currentState.focusedTag, goingAcross = goingAcross,
+            crosswordLength = width
+        )
+        val nextTagAndDirection = getNextTagAndCheck(
+            startTag = nextTag,
+            currentTag = currentState.focusedTag,
+            goingAcross = goingAcross,
+            checkCluesForwards = true,
+            crosswordEntry = currentState.entry,
+            tagToClueMap = _crossword.tagToClueMap,
+            clueToTagsMap = _crossword.clueToTagsMap,
+            clues = _crossword.clues,
+            crosswordWidth = width,
+            settings = _settingsVm.settings.value
+        )
         changeFocus(tag = nextTagAndDirection.tag, goingAcross = nextTagAndDirection.goingAcross)
     }
 
@@ -444,7 +492,6 @@ class CrosswordViewModel(crossword: Crossword, dataVm: CrosswordDataViewModel, s
             )
         }
     }
-
 
 
     //region Timer Utilities

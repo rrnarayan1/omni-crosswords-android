@@ -42,8 +42,10 @@ import com.rohanNarayan.omnicrosswords.ui.utils.verticalPadding
 import kotlinx.coroutines.launch
 
 @Composable
-fun CrosswordListItem(navController: NavController, crossword: Crossword, settingsVm: SettingsViewModel,
-                      onDismiss: () -> Unit) {
+fun CrosswordListItem(
+    navController: NavController, crossword: Crossword, settingsVm: SettingsViewModel,
+    onDismiss: () -> Unit
+) {
     val settings = settingsVm.settings.collectAsState()
     val outletName = crossword.outletName
     val formattedDate = toFormattedDate(crossword.date)
@@ -63,11 +65,14 @@ fun CrosswordListItem(navController: NavController, crossword: Crossword, settin
         backgroundContent = {
             when (swipeToDismissBoxState.dismissDirection) {
                 SwipeToDismissBoxValue.EndToStart -> {
-                    Row(modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.End) {
-                        IconButton(modifier = Modifier
-                            .background(Color.Gray)
-                            .padding(horizontal = horizontalPadding),
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        IconButton(
+                            modifier = Modifier
+                                .background(Color.Gray)
+                                .padding(horizontal = horizontalPadding),
                             onClick = { resetSwipeState() }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.Undo,
@@ -75,10 +80,12 @@ fun CrosswordListItem(navController: NavController, crossword: Crossword, settin
                                 tint = Color.White
                             )
                         }
-                        IconButton(modifier = Modifier
-                            .background(Color.Red)
-                            .padding(horizontal = horizontalPadding),
-                            onClick = onDismiss) {
+                        IconButton(
+                            modifier = Modifier
+                                .background(Color.Red)
+                                .padding(horizontal = horizontalPadding),
+                            onClick = onDismiss
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "Remove item",
@@ -88,15 +95,17 @@ fun CrosswordListItem(navController: NavController, crossword: Crossword, settin
                     }
 
                 }
+
                 SwipeToDismissBoxValue.StartToEnd -> {}
                 SwipeToDismissBoxValue.Settled -> {}
             }
         }
     ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = horizontalPadding, vertical = verticalPadding)
-            .clickable { navController.navigate(route = NavRoute.Crossword.route + "?crosswordId=${crossword.id}") },
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = horizontalPadding, vertical = verticalPadding)
+                .clickable { navController.navigate(route = NavRoute.Crossword.route + "?crosswordId=${crossword.id}") },
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -115,10 +124,12 @@ fun CrosswordListItem(navController: NavController, crossword: Crossword, settin
                 }
 
                 if (crossword.isSolved) {
-                    Icon(imageVector = Icons.Default.CheckCircle,
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
                         tint = SuccessGreen,
                         modifier = Modifier.size(iconSize),
-                        contentDescription = "Solved")
+                        contentDescription = "Solved"
+                    )
                 } else if (progress > 0) {
                     CircularProgressIndicator(
                         progress = { progress },
@@ -130,7 +141,8 @@ fun CrosswordListItem(navController: NavController, crossword: Crossword, settin
                 }
 
                 if (swipeToDismissBoxState.dismissDirection == SwipeToDismissBoxValue.Settled) {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = "Open",
                         tint = Color.Gray,
                     )

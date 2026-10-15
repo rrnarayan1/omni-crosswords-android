@@ -20,7 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun PickerSetting(label: String, currentLabel: String, options: Map<Int, String>, onChange: (Int) -> Unit) {
+fun PickerSetting(
+    label: String,
+    currentLabel: String,
+    options: Map<Int, String>,
+    onChange: (Int) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier.fillMaxWidth(),
