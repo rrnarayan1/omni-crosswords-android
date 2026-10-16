@@ -40,7 +40,7 @@ fun CrosswordCell(
     symbol: Int,
     isFocusedTag: Boolean,
     isHighlighted: Boolean,
-    boxWidth: Float,
+    boxWidthDp: Float,
     onClick: () -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
@@ -63,14 +63,14 @@ fun CrosswordCell(
 
     Box(
         modifier = Modifier
-            .size(boxWidth.dp)
+            .size(boxWidthDp.dp)
             .border(0.5.dp, Color.Black)
             .background(backgroundColor)
             .clickable(enabled = isEditable) { onClick() },
         contentAlignment = Alignment.Center
     ) {
         if (isEditable) {
-            val fontSize = if (value.length == 1) boxWidth * 0.8 else (boxWidth / value.length)
+            val fontSize = if (value.length == 1) boxWidthDp * 0.8 else (boxWidthDp / value.length)
             Text(
                 text = value,
                 style = TextStyle(fontSize = fontSize.toInt().sp)
@@ -79,18 +79,18 @@ fun CrosswordCell(
             if (symbol in 1000..<10000) {
                 // 1000 means cell should be circled,
                 // 10000 means cell should be shaded
-                Canvas(modifier = Modifier.size(boxWidth.dp)) {
+                Canvas(modifier = Modifier.size(boxWidthDp.dp)) {
                     drawCircle(
                         color = Color.Black,
                         style = Stroke(width = 1f),
-                        radius = boxWidth,
+                        radius = boxWidthDp,
                         center = center
                     )
                 }
             }
 
             if (showHelpReceived) {
-                Canvas(modifier = Modifier.size(boxWidth.dp)) {
+                Canvas(modifier = Modifier.size(boxWidthDp.dp)) {
                     val path = Path().apply {
                         moveTo(4 * size.width / 5f, size.height) // mid-bottom
                         lineTo(size.width, 4 * size.height / 5f) // mid-right
@@ -110,7 +110,7 @@ fun CrosswordCell(
                 val clueNum = symbol % 1000
                 Text(
                     text = clueNum.toString(),
-                    style = TextStyle(fontSize = (boxWidth * 0.2).sp),
+                    style = TextStyle(fontSize = (boxWidthDp * 0.2).sp),
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(2.dp)

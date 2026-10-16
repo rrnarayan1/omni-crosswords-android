@@ -16,6 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import com.rohanNarayan.omnicrosswords.data.Crossword
 import com.rohanNarayan.omnicrosswords.ui.theme.SuccessGreen
@@ -27,7 +29,7 @@ fun CrosswordTopBar(
     crossword: Crossword, isSolved: Boolean, isErrorTrackingEnabled: Boolean,
     onErrorTrackingChange: () -> Unit, isRebusModeEnabled: Boolean, onRebusModeChange: () -> Unit,
     showKeyboard: Boolean, onShowKeyboardChange: () -> Unit, shareIntent: () -> Unit,
-    goBack: () -> Unit
+    goBack: () -> Unit, setTopBarHeight: (Int) -> Unit
 ) {
     var showSettings by remember { mutableStateOf(false) }
     val formattedDate = toFormattedDate(crossword.date)
@@ -70,6 +72,9 @@ fun CrosswordTopBar(
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = if (isSolved) SuccessGreen else MaterialTheme.colorScheme.surfaceVariant
-        )
+        ),
+        modifier = Modifier.onGloballyPositioned { coordinates ->
+            setTopBarHeight(coordinates.size.height)
+        }
     )
 }

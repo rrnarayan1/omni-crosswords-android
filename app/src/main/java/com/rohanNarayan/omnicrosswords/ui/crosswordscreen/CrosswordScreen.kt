@@ -22,7 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -76,23 +79,26 @@ fun CrosswordScreen(
             vm.getActiveClue()
         }
         val settings = settingsVm.settings.collectAsState()
-        val widthInDp: Float = with(LocalDensity.current) {
-            LocalWindowInfo.current.containerSize.width.toDp().value
-        }
         val scrollState = rememberScrollState()
         val focusRequester = remember { FocusRequester() }
+        var topBarHeightPx by remember { mutableIntStateOf(0) }
+
         val context = LocalContext.current
+        val density = LocalDensity.current
+        val widthDp: Float = with(density) {
+            LocalWindowInfo.current.containerSize.width.toDp().value
+        }
 
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
         }
 
         val maxWidth = maximumCellSize.value
-        var boxWidth = (widthInDp - smallHorizontalPadding.value * 2) / crossword.width
-        boxWidth = min(maxWidth, boxWidth)
+        var boxWidthDp = (widthDp - smallHorizontalPadding.value * 2) / crossword.width
+        boxWidthDp = min(maxWidth, boxWidthDp)
 
         BoxWithConstraints {
-            val totalScreenHeight = maxHeight
+            val totalScreenHeightDp = maxHeight
 
             Scaffold(
                 topBar = {
@@ -106,19 +112,24 @@ fun CrosswordScreen(
                         goBack = goBack,
                         showKeyboard = state.showKeyboard,
                         shareIntent = { vm.shareIntent(context) },
-                        onShowKeyboardChange = { vm.toggleShowKeyboard() }
+                        onShowKeyboardChange = { vm.toggleShowKeyboard() },
+                        setTopBarHeight = { height ->
+                            topBarHeightPx = height
+                        }
                     )
                 },
                 bottomBar = {
+                    val topBarHeightDp = with(density) { topBarHeightPx.toDp() }
+
                     CrosswordScaffoldBottomBar(
                         vm = vm,
                         isVisible = state.focusedTag != -1,
                         showKeyboard = state.showKeyboard,
-                        boxWidth = boxWidth,
+                        boxWidthDp = boxWidthDp,
                         crossword = crossword,
                         activeClue = activeClue,
                         clueFontSize = settings.value.clueFontSize,
-                        totalScreenHeight = totalScreenHeight
+                        totalScreenHeightDp = totalScreenHeightDp - topBarHeightDp
                     )
                 }
             ) { padding ->
@@ -177,7 +188,7 @@ fun CrosswordScreen(
                                                 symbol = crossword.symbols[tag],
                                                 isFocusedTag = (tag == state.focusedTag),
                                                 isHighlighted = isHighlighted,
-                                                boxWidth = boxWidth,
+                                                boxWidthDp = boxWidthDp,
                                                 onClick = { vm.onCellTap(tag) }
                                             )
                                         }
@@ -208,16 +219,16 @@ fun CrosswordScreen(
 @Composable
 fun CrosswordScaffoldBottomBar(
     vm: CrosswordViewModel, isVisible: Boolean, showKeyboard: Boolean,
-    boxWidth: Float, crossword: Crossword, activeClue: String?,
-    clueFontSize: Int, totalScreenHeight: Dp
+    boxWidthDp: Float, crossword: Crossword, activeClue: String?,
+    clueFontSize: Int, totalScreenHeightDp: Dp
 ) {
-    var heightOfElements = (crossword.height * boxWidth)
+    var heightOfElements = (crossword.height * boxWidthDp)
     if (showKeyboard) {
         heightOfElements += keyboardHeight.value
     }
     // see if we have space for timer, actions and clue
     heightOfElements += crosswordToolbarHeight.value * 3
-    val extraDisplaySpace = totalScreenHeight.value - heightOfElements
+    val extraDisplaySpace = totalScreenHeightDp.value - heightOfElements
 
     Column(
         modifier = Modifier
@@ -228,7 +239,7 @@ fun CrosswordScaffoldBottomBar(
         if (isVisible) {
             CrosswordClueToolbar(
                 vm = vm,
-                width = boxWidth * crossword.width,
+                width = boxWidthDp * crossword.width,
                 extraDisplaySpace = extraDisplaySpace,
                 activeClue = activeClue,
                 clueFontSize = clueFontSize,
