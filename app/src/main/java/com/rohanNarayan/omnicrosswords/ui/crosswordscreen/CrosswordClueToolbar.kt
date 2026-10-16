@@ -92,7 +92,6 @@ fun ClueText(
     Column(
         modifier = Modifier
             .width(textWidth.dp)
-            .background(Color.Magenta)
             .verticalScroll(scrollState)
             .padding(horizontal = horizontalPadding)
             .clickable(enabled = isClickEnabled) { onClick() },
