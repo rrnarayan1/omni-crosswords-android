@@ -39,7 +39,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rohanNarayan.omnicrosswords.data.Crossword
 import com.rohanNarayan.omnicrosswords.data.CrosswordDataViewModel
@@ -232,7 +231,7 @@ fun CrosswordScaffoldBottomBar(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 8.dp), // Accommodate the system bar
+            .padding(bottom = verticalPadding), // Accommodate the system bar
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (isVisible) {

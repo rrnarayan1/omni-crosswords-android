@@ -36,7 +36,7 @@ fun CrosswordClueToolbar(
             Row(
                 modifier = Modifier
                     .width(width.dp)
-                    .height(if (extraDisplaySpace > crosswordToolbarHeight.value * 2) crosswordToolbarHeight * 2 else crosswordToolbarHeight),
+                    .height(if (extraDisplaySpace > crosswordToolbarHeight.value * 3 / 2) crosswordToolbarHeight * 3 / 2 else crosswordToolbarHeight),
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
