@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class UploadViewModel(dataVm: CrosswordDataViewModel) : ViewModel() {
     private val _uploadState = MutableStateFlow(UploadState())
@@ -83,19 +86,35 @@ class UploadViewModel(dataVm: CrosswordDataViewModel) : ViewModel() {
             }
 
             val requestFile = fileBytes.toRequestBody()
-            val response = uploadClient.uploadFile(bearerValue, body = requestFile)
+            try {
+                val response = uploadClient.uploadFile(bearerValue, body = requestFile)
 
-            if (response.errorBody() != null || response.body() == null) {
-                showErrorMessage("Could not parse file")
-                return@launch
-            }
-            _dataVm.formatAndInsert(response.body()!!)
+                if (response.errorBody() != null || response.body() == null) {
+                    showErrorMessage("Could not parse file")
+                    return@launch
+                }
+                _dataVm.formatAndInsert(response.body()!!)
 
-            _uploadState.update {
-                UploadState(
-                    isSuccessfulUpload = true
-                )
+                _uploadState.update {
+                    UploadState(
+                        isSuccessfulUpload = true
+                    )
+                }
+            } catch (e: SocketTimeoutException) {
+                // Specific network failure: The upload took too long
+                showErrorMessage("Connection timed out. Please try again.")
+            } catch (e: UnknownHostException) {
+                // Specific network failure: No internet or DNS could not resolve BASE_URL
+                showErrorMessage("No internet connection. Check your network.")
+            } catch (e: IOException) {
+                // General network failure: Connection dropped mid-upload, airplane mode, etc.
+                showErrorMessage("Network error occurred during upload.")
+            } catch (e: Exception) {
+                // Catch-all for unexpected bugs (e.g., JSON parsing issues)
+                showErrorMessage("Unexpected error during upload.")
             }
+
+
         }
     }
 
