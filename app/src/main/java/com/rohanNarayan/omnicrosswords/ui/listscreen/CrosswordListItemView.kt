@@ -44,7 +44,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CrosswordListItem(
     navController: NavController, crossword: Crossword, settingsVm: SettingsViewModel,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit, isScrolling: () -> Boolean
 ) {
     val settings = settingsVm.settings.collectAsState()
     val outletName = crossword.outletName
@@ -61,6 +61,7 @@ fun CrosswordListItem(
     SwipeToDismissBox(
         state = swipeToDismissBoxState,
         modifier = Modifier.fillMaxWidth(),
+        enableDismissFromEndToStart = !isScrolling(),
         enableDismissFromStartToEnd = false,
         backgroundContent = {
             when (swipeToDismissBoxState.dismissDirection) {
@@ -103,13 +104,12 @@ fun CrosswordListItem(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(horizontal = horizontalPadding, vertical = verticalPadding)
                 .clickable { navController.navigate(route = NavRoute.Crossword.route + "?crosswordId=${crossword.id}") },
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(title)
+            Text(title, modifier = Modifier.weight(1f))
             val progress = getProgress(symbols = crossword.symbols, entry = crossword.entry)
 
             Row(verticalAlignment = Alignment.CenterVertically) {

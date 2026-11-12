@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.Settings
@@ -61,6 +62,7 @@ fun CrosswordListScreen(
         showOnlyHidden = true
     )
     val crosswordList = crosswordListFlow.collectAsState(initial = emptyList())
+    val listState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
         fetchCrosswords(
@@ -110,10 +112,13 @@ fun CrosswordListScreen(
                     .fillMaxSize()
                     .padding(padding),
                 contentPadding = PaddingValues(horizontal = smallHorizontalPadding),
+                state = listState
             ) {
+                val isScrollInProgress = listState.isScrollInProgress
                 items(crosswordList.value, key = { it.id }) { crossword ->
                     CrosswordListItem(
                         navController = navController,
+                        isScrolling = { isScrollInProgress },
                         crossword = crossword,
                         settingsVm = settingsVm,
                         onDismiss = { dismissCrossword(dataViewModel, crossword) }
